@@ -127,7 +127,7 @@ contains
     call alloc_x(td1);call alloc_x(te1);call alloc_x(tf1)
     call alloc_x(tg1);call alloc_x(th1);call alloc_x(ti1)
     call alloc_x(di1);call alloc_x(ep1)
-    if (iles > 1) then
+    if (iles > 0) then
 		! allocation for explicit LES 
 		call alloc_x(duxdx1);  call alloc_x(duydx1); call alloc_x(duzdx1); 
 		call alloc_x(duxdy1);  call alloc_x(duxdz1); 
@@ -184,7 +184,7 @@ contains
     call alloc_y(tg2);call alloc_y(th2);call alloc_y(ti2)
     call alloc_y(tj2)
     call alloc_y(di2);call alloc_y(phi2)
-    if (iles > 1) then
+    if (iles > 0) then
 		! allocation for explicit LES 
 		call alloc_y(duxdx2);  call alloc_y(duydx2); call alloc_y(duzdx2);
 		call alloc_y(duxdy2);  call alloc_y(duydy2); call alloc_y(duzdy2);
@@ -199,7 +199,7 @@ contains
     call alloc_z(td3);call alloc_z(te3);call alloc_z(tf3)
     call alloc_z(tg3);call alloc_z(th3);call alloc_z(ti3)
     call alloc_z(di3);call alloc_z(phi3)
-    if (iles > 1) then
+    if (iles > 0) then
 		! allocation for explicit LES 
 		call alloc_z(duxdx3);  call alloc_z(duydx3); call alloc_z(duzdx3);
 		call alloc_z(duxdy3);  call alloc_z(duydy3); call alloc_z(duzdy3);

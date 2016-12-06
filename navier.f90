@@ -566,7 +566,12 @@ endif
 
 if (iles > 0) then !initialize the deltabar array
 	do j=1,ny
-	   delta_bar(j) = (dx*dz*dy/ppy(j))**(1.0/3.0)
+		if (istret > 0) then
+			delta_bar(j) = (dx*dz*dy/ppy(j))**(1.0/3.0)
+	   else
+			delta_bar(j) = (dx*dz*dy)**(1.0/3.0)
+	   endif
+	   if (nrank.eq.0) print *,'delta_bar',j,delta_bar(j)
 	enddo
 	Csmag = 0.16
 endif

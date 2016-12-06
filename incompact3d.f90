@@ -122,14 +122,13 @@ do itime=ifirst,ilast
          call inflow (ux1,uy1,uz1,phi1) !X PENCILS
          call outflow(ux1,uy1,uz1,phi1) !X PENCILS 
       endif
-
-     !X-->Y-->Z-->Y-->X
+      !X-->Y-->Z-->Y-->X
       call convdiff(ux1,uy1,uz1,ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1,&
            ux2,uy2,uz2,ta2,tb2,tc2,td2,te2,tf2,tg2,th2,ti2,tj2,di2,&
            ux3,uy3,uz3,ta3,tb3,tc3,td3,te3,tf3,tg3,th3,ti3,di3,&
            duxdx1,duxdx2,duxdx3,duydx1,duydx2,duydx3,duzdx1,duzdx2,duzdx3,&
-						duxdy2,duxdy3,             duydy2,duydy3,             duzdy2,duzdy3,&
-									 duxdz3,                          duydz3,                          duzdz3,&
+		   duxdy1,duxdy2,duxdy3,            duydy2,duydy3,              duzdy2,duzdy3,&
+           duxdz1,duxdz2,duxdz3,            duydz2,duydz3,                           duzdz3,&
 		   xnu_sgs1,xnu_sgs2,xnu_sgs3,les_a1,les_a2,les_a3,les_b1,les_b2,&
            div_tau_x1,div_tau_y1,div_tau_z1,&
            div_tau_x2,div_tau_y2,div_tau_z2,&

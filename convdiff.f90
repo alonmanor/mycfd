@@ -72,11 +72,10 @@ integer :: ijk,nvect1,nvect2,nvect3,i,j,k
 real(mytype) :: x,y,z
 
 
-
 nvect1=xsize(1)*xsize(2)*xsize(3)
 nvect2=ysize(1)*ysize(2)*ysize(3)
 nvect3=zsize(1)*zsize(2)*zsize(3)
- 
+
 if (iskew==0) then !UROTU!
 !WORK X-PENCILS
    call derx (ta1,uy1,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1)
@@ -223,13 +222,17 @@ if (iles > 0) then !calculate nu_SGS=(delta*C_S)^2 * sqrt(2*Sij*Sij)
        xnu_sgs3(ijk,1,1) = ( duxdz3(ijk,1,1) + duzdx3(ijk,1,1) )  ** 2.0 + xnu_sgs3(ijk,1,1)
        xnu_sgs3(ijk,1,1) = ( duydz3(ijk,1,1) + duzdy3(ijk,1,1) )  ** 2.0 + xnu_sgs3(ijk,1,1)
     enddo
-    do i=zstart(1),zend(1)
-        do j=zstart(2),zend(2)
-            do k=zstart(3), zend(3)
-                xnu_sgs3(i,j,k) = (delta_bar(j) * Csmag)**2.0 * sqrt(xnu_sgs3(i,j,k))
-            enddo
-        enddo
-    enddo
+    if (istret > 0) then
+		do i=zstart(1),zend(1)
+			do j=zstart(2),zend(2)
+				do k=zstart(3), zend(3)
+					xnu_sgs3(i,j,k) = (delta_bar(j) * Csmag)**2.0 * sqrt(xnu_sgs3(i,j,k))
+				enddo
+			enddo
+		enddo
+    else
+		xnu_sgs3(:,:,:) = (delta_bar(1) * Csmag)**2.0 * sqrt(xnu_sgs3(:,:,:))
+    endif
 endif
 
 !DIFFUSIVE TERMS IN Z
