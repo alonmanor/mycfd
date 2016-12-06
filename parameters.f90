@@ -101,6 +101,10 @@ read (10,*) cey
 read (10,*) cez 
 read (10,*) ra 
 read (10,1000) a 
+read (10,1000) a
+read (10,1000) a
+read (10,*) iles
+read (10,1000) a
 close(10) 
 if (nrank==0) then
 print *,'==========================================================='
@@ -147,6 +151,16 @@ endif
 if (ivirt.eq.2) then
    print *,'Immersed boundary : on with Lagrangian Poly'
 endif
+if (iles<1) then
+	print *,'No explicit LES'
+else
+	print *,'Explicit LES applied'
+	if (iles.eq.1) then
+		print *,'Smagorinsky SGS model'
+	endif
+endif
+
+
 
 
  1101 format(' Spatial Resolution: (nx,ny,nz)=(',I4,',',I4,',',I4,')')

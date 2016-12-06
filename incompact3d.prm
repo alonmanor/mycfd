@@ -41,3 +41,7 @@
 0.    #cez  # Z-centre position of the solid body
 0.5   #re   # Radius of the solid body
 #
+# explicit LES parameters
+#
+1          # SGS model (0: No LES, 1: Smagorinsky)
+#
