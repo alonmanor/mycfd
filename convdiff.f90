@@ -382,9 +382,9 @@ ta1(:,:,:)=xnu*ta1(:,:,:)-tg1(:,:,:)
 tb1(:,:,:)=xnu*tb1(:,:,:)-th1(:,:,:)
 tc1(:,:,:)=xnu*tc1(:,:,:)-ti1(:,:,:)
 if (iles == 1) then
-   ta1(:,:,:)=div_tau_x1(:,:,:) + ta1(:,:,:)
-   tb1(:,:,:)=div_tau_y1(:,:,:) + tb1(:,:,:)
-   tc1(:,:,:)=div_tau_z1(:,:,:) + tc1(:,:,:)
+	ta1(:,:,:)=div_tau_x1(:,:,:) + ta1(:,:,:)
+    tb1(:,:,:)=div_tau_y1(:,:,:) + tb1(:,:,:)
+    tc1(:,:,:)=div_tau_z1(:,:,:) + tc1(:,:,:)
 endif
 
 end subroutine convdiff

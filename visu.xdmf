@@ -1,0 +1,852 @@
+<?xml version="1.0" ?>
+ <!DOCTYPE Xdmf SYSTEM "Xdmf.dtd" []>
+ <Xdmf xmlns:xi="http://www.w3.org/2001/XInclude" Version="2.0">
+ <Domain>
+     <Topology name="topo" TopologyType="3DRectMesh"
+         Dimensions="          84         129         128 ">
+     </Topology>
+     <Geometry name="geo" Type="VXVYVZ">
+     <DataItem Dimensions="         128 " NumberType="Float" Precision="4" Format="XML">
+        0.00000000       9.81718749E-02  0.196343750      0.294515610      0.392687500      0.490859389      0.589031219      0.687203109      0.785374999      0.883546889      0.981718779       1.07989061       1.17806244       1.27623439       1.37440622       1.47257817       1.57075000       1.66892183       1.76709378       1.86526561       1.96343756       2.06160927       2.15978122       2.25795317       2.35612488       2.45429683       2.55246878       2.65064073       2.74881244       2.84698439       2.94515634       3.04332805       3.14150000       3.23967195       3.33784366       3.43601561       3.53418756       3.63235927       3.73053122       3.82870317       3.92687511       4.02504683       4.12321854       4.22139072       4.31956244       4.41773415       4.51590633       4.61407804       4.71224976       4.81042194       4.90859365       5.00676584       5.10493755       5.20310926       5.30128145       5.39945316       5.49762487       5.59579706       5.69396877       5.79214048       5.89031267       5.98848438       6.08665609       6.18482828       6.28299999       6.38117170       6.47934389       6.57751560       6.67568731       6.77385950       6.87203121       6.97020292       7.06837511       7.16654682       7.26471853       7.36289072       7.46106243       7.55923414       7.65740633       7.75557804       7.85375023       7.95192194       8.05009365       8.14826584       8.24643707       8.34460926       8.44278145       8.54095268       8.63912487       8.73729706       8.83546829       8.93364048       9.03181267       9.12998390       9.22815609       9.32632828       9.42449951       9.52267170       9.62084389       9.71901608       9.81718731       9.91535950       10.0135317       10.1117029       10.2098751       10.3080473       10.4062185       10.5043907       10.6025629       10.7007341       10.7989063       10.8970785       10.9952497       11.0934219       11.1915941       11.2897654       11.3879375       11.4861097       11.5842810       11.6824532       11.7806253       11.8787966       11.9769688       12.0751410       12.1733122       12.2714844       12.3696566       12.4678278    
+     </DataItem>
+     <DataItem Dimensions="         129 " NumberType="Float" Precision="4" Format="XML">
+        0.00000000       5.55577828E-03   1.11174090E-02   1.66907664E-02   2.22817734E-02   2.78964192E-02   3.35407853E-02   3.92210782E-02   4.49436419E-02   5.07149883E-02   5.65418340E-02   6.24311194E-02   6.83900416E-02   7.44260997E-02   8.05471167E-02   8.67612660E-02   9.30771604E-02   9.95038301E-02  0.106050842      0.112728298      0.119546905      0.126518071      0.133653924      0.140967444      0.148472473      0.156183884      0.164117634      0.172290906      0.180722177      0.189431444      0.198440269      0.207772002      0.217451975      0.227507651      0.237968862      0.248868018      0.260240406      0.272124380      0.284561753      0.297597915      0.311282337      0.325668722      0.340815336      0.356785238      0.373646468      0.391472101      0.410340250      0.430333644      0.451539248      0.474047065      0.497948825      0.523335755      0.550295591      0.578908622      0.609242916      0.641347826      0.675247312      0.710931897      0.748351038      0.787405670      0.827943325      0.869755566      0.912580431      0.956109583       1.00000000       1.04389048       1.08741951       1.13024449       1.17205667       1.21259427       1.25164902       1.28906810       1.32475269       1.35865223       1.39075708       1.42109132       1.44970441       1.47666430       1.50205112       1.52595294       1.54846072       1.56966639       1.58965981       1.60852790       1.62635350       1.64321482       1.65918469       1.67433131       1.68871772       1.70240211       1.71543825       1.72787559       1.73975956       1.75113201       1.76203108       1.77249229       1.78254807       1.79222798       1.80155969       1.81056857       1.81927776       1.82770908       1.83588231       1.84381616       1.85152757       1.85903251       1.86634612       1.87348199       1.88045311       1.88727176       1.89394915       1.90049613       1.90692282       1.91323876       1.91945291       1.92557395       1.93160999       1.93756890       1.94345820       1.94928503       1.95505631       1.96077895       1.96645916       1.97210360       1.97771823       1.98330927       1.98888254       1.99444425       2.00000000    
+     </DataItem>
+     <DataItem Dimensions="          84 " NumberType="Float" Precision="4" Format="XML">
+        0.00000000       4.98571470E-02   9.97142941E-02  0.149571449      0.199428588      0.249285728      0.299142897      0.349000037      0.398857176      0.448714316      0.498571455      0.548428595      0.598285794      0.648142934      0.698000073      0.747857213      0.797714353      0.847571492      0.897428632      0.947285771      0.997142911       1.04700005       1.09685719       1.14671433       1.19657159       1.24642873       1.29628587       1.34614301       1.39600015       1.44585729       1.49571443       1.54557157       1.59542871       1.64528584       1.69514298       1.74500012       1.79485726       1.84471440       1.89457154       1.94442868       1.99428582       2.04414296       2.09400010       2.14385724       2.19371438       2.24357152       2.29342866       2.34328580       2.39314318       2.44300032       2.49285746       2.54271460       2.59257174       2.64242887       2.69228601       2.74214315       2.79200029       2.84185743       2.89171457       2.94157171       2.99142885       3.04128599       3.09114313       3.14100027       3.19085741       3.24071455       3.29057169       3.34042883       3.39028597       3.44014311       3.49000025       3.53985739       3.58971453       3.63957167       3.68942881       3.73928595       3.78914309       3.83900023       3.88885736       3.93871450       3.98857164       4.03842878       4.08828592       4.13814306    
+     </DataItem>
+     </Geometry>
+
+
+     <Grid Name="TimeSeries" GridType="Collection" CollectionType="Temporal">
+         <Time TimeType="HyperSlab">
+             <DataItem Format="XML" NumberType="Float" Dimensions="3">
+            <!--Start, Stride, Count-->
+             0.0   1.00000000    
+             </DataItem>
+         </Time>
+
+
+         <Grid Name="001" GridType="Uniform">
+             <Topology Reference="/Xdmf/Domain/Topology[1]"/>
+             <Geometry Reference="/Xdmf/Domain/Geometry[1]"/>
+             <Attribute Name="ux" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   ux001
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uy" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy001
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort001
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uz" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy001
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort001
+                </DataItem>
+             </Attribute>
+         </Grid>
+
+
+         <Grid Name="002" GridType="Uniform">
+             <Topology Reference="/Xdmf/Domain/Topology[1]"/>
+             <Geometry Reference="/Xdmf/Domain/Geometry[1]"/>
+             <Attribute Name="ux" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   ux002
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uy" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy002
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort002
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uz" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy002
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort002
+                </DataItem>
+             </Attribute>
+         </Grid>
+
+
+         <Grid Name="003" GridType="Uniform">
+             <Topology Reference="/Xdmf/Domain/Topology[1]"/>
+             <Geometry Reference="/Xdmf/Domain/Geometry[1]"/>
+             <Attribute Name="ux" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   ux003
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uy" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy003
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort003
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uz" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy003
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort003
+                </DataItem>
+             </Attribute>
+         </Grid>
+
+
+         <Grid Name="004" GridType="Uniform">
+             <Topology Reference="/Xdmf/Domain/Topology[1]"/>
+             <Geometry Reference="/Xdmf/Domain/Geometry[1]"/>
+             <Attribute Name="ux" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   ux004
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uy" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy004
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort004
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uz" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy004
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort004
+                </DataItem>
+             </Attribute>
+         </Grid>
+
+
+         <Grid Name="005" GridType="Uniform">
+             <Topology Reference="/Xdmf/Domain/Topology[1]"/>
+             <Geometry Reference="/Xdmf/Domain/Geometry[1]"/>
+             <Attribute Name="ux" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   ux005
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uy" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy005
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort005
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uz" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy005
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort005
+                </DataItem>
+             </Attribute>
+         </Grid>
+
+
+         <Grid Name="006" GridType="Uniform">
+             <Topology Reference="/Xdmf/Domain/Topology[1]"/>
+             <Geometry Reference="/Xdmf/Domain/Geometry[1]"/>
+             <Attribute Name="ux" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   ux006
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uy" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy006
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort006
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uz" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy006
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort006
+                </DataItem>
+             </Attribute>
+         </Grid>
+
+
+         <Grid Name="007" GridType="Uniform">
+             <Topology Reference="/Xdmf/Domain/Topology[1]"/>
+             <Geometry Reference="/Xdmf/Domain/Geometry[1]"/>
+             <Attribute Name="ux" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   ux007
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uy" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy007
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort007
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uz" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy007
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort007
+                </DataItem>
+             </Attribute>
+         </Grid>
+
+
+         <Grid Name="008" GridType="Uniform">
+             <Topology Reference="/Xdmf/Domain/Topology[1]"/>
+             <Geometry Reference="/Xdmf/Domain/Geometry[1]"/>
+             <Attribute Name="ux" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   ux008
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uy" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy008
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort008
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uz" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy008
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort008
+                </DataItem>
+             </Attribute>
+         </Grid>
+
+
+         <Grid Name="009" GridType="Uniform">
+             <Topology Reference="/Xdmf/Domain/Topology[1]"/>
+             <Geometry Reference="/Xdmf/Domain/Geometry[1]"/>
+             <Attribute Name="ux" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   ux009
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uy" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy009
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort009
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uz" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy009
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort009
+                </DataItem>
+             </Attribute>
+         </Grid>
+
+
+         <Grid Name="010" GridType="Uniform">
+             <Topology Reference="/Xdmf/Domain/Topology[1]"/>
+             <Geometry Reference="/Xdmf/Domain/Geometry[1]"/>
+             <Attribute Name="ux" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   ux010
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uy" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy010
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort010
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uz" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy010
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort010
+                </DataItem>
+             </Attribute>
+         </Grid>
+
+
+         <Grid Name="011" GridType="Uniform">
+             <Topology Reference="/Xdmf/Domain/Topology[1]"/>
+             <Geometry Reference="/Xdmf/Domain/Geometry[1]"/>
+             <Attribute Name="ux" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   ux011
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uy" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy011
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort011
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uz" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy011
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort011
+                </DataItem>
+             </Attribute>
+         </Grid>
+
+
+         <Grid Name="012" GridType="Uniform">
+             <Topology Reference="/Xdmf/Domain/Topology[1]"/>
+             <Geometry Reference="/Xdmf/Domain/Geometry[1]"/>
+             <Attribute Name="ux" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   ux012
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uy" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy012
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort012
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uz" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy012
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort012
+                </DataItem>
+             </Attribute>
+         </Grid>
+
+
+         <Grid Name="013" GridType="Uniform">
+             <Topology Reference="/Xdmf/Domain/Topology[1]"/>
+             <Geometry Reference="/Xdmf/Domain/Geometry[1]"/>
+             <Attribute Name="ux" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   ux013
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uy" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy013
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort013
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uz" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy013
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort013
+                </DataItem>
+             </Attribute>
+         </Grid>
+
+
+         <Grid Name="014" GridType="Uniform">
+             <Topology Reference="/Xdmf/Domain/Topology[1]"/>
+             <Geometry Reference="/Xdmf/Domain/Geometry[1]"/>
+             <Attribute Name="ux" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   ux014
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uy" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy014
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort014
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uz" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy014
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort014
+                </DataItem>
+             </Attribute>
+         </Grid>
+
+
+         <Grid Name="015" GridType="Uniform">
+             <Topology Reference="/Xdmf/Domain/Topology[1]"/>
+             <Geometry Reference="/Xdmf/Domain/Geometry[1]"/>
+             <Attribute Name="ux" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   ux015
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uy" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy015
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort015
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uz" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy015
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort015
+                </DataItem>
+             </Attribute>
+         </Grid>
+
+
+         <Grid Name="016" GridType="Uniform">
+             <Topology Reference="/Xdmf/Domain/Topology[1]"/>
+             <Geometry Reference="/Xdmf/Domain/Geometry[1]"/>
+             <Attribute Name="ux" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   ux016
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uy" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy016
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort016
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uz" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy016
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort016
+                </DataItem>
+             </Attribute>
+         </Grid>
+
+
+         <Grid Name="017" GridType="Uniform">
+             <Topology Reference="/Xdmf/Domain/Topology[1]"/>
+             <Geometry Reference="/Xdmf/Domain/Geometry[1]"/>
+             <Attribute Name="ux" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   ux017
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uy" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy017
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort017
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uz" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy017
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort017
+                </DataItem>
+             </Attribute>
+         </Grid>
+
+
+         <Grid Name="018" GridType="Uniform">
+             <Topology Reference="/Xdmf/Domain/Topology[1]"/>
+             <Geometry Reference="/Xdmf/Domain/Geometry[1]"/>
+             <Attribute Name="ux" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   ux018
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uy" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy018
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort018
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uz" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy018
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort018
+                </DataItem>
+             </Attribute>
+         </Grid>
+
+
+         <Grid Name="019" GridType="Uniform">
+             <Topology Reference="/Xdmf/Domain/Topology[1]"/>
+             <Geometry Reference="/Xdmf/Domain/Geometry[1]"/>
+             <Attribute Name="ux" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   ux019
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uy" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy019
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort019
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uz" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy019
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort019
+                </DataItem>
+             </Attribute>
+         </Grid>
+
+
+         <Grid Name="020" GridType="Uniform">
+             <Topology Reference="/Xdmf/Domain/Topology[1]"/>
+             <Geometry Reference="/Xdmf/Domain/Geometry[1]"/>
+             <Attribute Name="ux" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   ux020
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uy" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy020
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort020
+                </DataItem>
+             </Attribute>
+             <Attribute Name="uz" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   uy020
+                </DataItem>
+             </Attribute>
+             <Attribute Name="vort" Center="Node">
+                <DataItem Format="Binary" 
+                 DataType="Float" Precision="8" Endian="little"
+                 Dimensions="          84         129         128 ">
+                   vort020
+                </DataItem>
+             </Attribute>
+         </Grid>
+
+
+     </Grid>
+ </Domain>
+</Xdmf>
