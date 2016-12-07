@@ -223,10 +223,10 @@ if (iles > 0) then !calculate nu_SGS=(delta*C_S)^2 * sqrt(2*Sij*Sij)
        xnu_sgs3(ijk,1,1) = ( duydz3(ijk,1,1) + duzdy3(ijk,1,1) )  ** 2.0 + xnu_sgs3(ijk,1,1)
     enddo
     if (istret > 0) then
-		do i=zstart(1),zend(1)
-			do j=zstart(2),zend(2)
-				do k=zstart(3), zend(3)
-					xnu_sgs3(i,j,k) = (delta_bar(j) * Csmag)**2.0 * sqrt(xnu_sgs3(i,j,k))
+		do j=1,zsize(2)
+			do i=1,zsize(1)
+				do k=1,zsize(3)
+					xnu_sgs3(i,j,k) = (delta_bar(zstart(2)-1+j) * Csmag)**2.0 * sqrt(xnu_sgs3(i,j,k))
 				enddo
 			enddo
 		enddo
@@ -234,6 +234,7 @@ if (iles > 0) then !calculate nu_SGS=(delta*C_S)^2 * sqrt(2*Sij*Sij)
 		xnu_sgs3(:,:,:) = (delta_bar(1) * Csmag)**2.0 * sqrt(xnu_sgs3(:,:,:))
     endif
 endif
+call exit()
 
 !DIFFUSIVE TERMS IN Z
 call derzz (ta3,ux3,di3,sz,sfzp,sszp,swzp,zsize(1),zsize(2),zsize(3),1)
@@ -247,6 +248,8 @@ if (iles == 1) then
     call derz(div_tau_y3, les_a3 ,di3,sz,ffz,fsz,fwz,zsize(1),zsize(2),zsize(3),0) ! div_tau_y=d(tau_yz)/dz
     les_a3(:,:,:) = -2.0*xnu_sgs3(:,:,:) * duzdz3(:,:,:)                                   ! tau_zz = -2.0*nu*Szz 
     call derz(div_tau_z3, les_a3 ,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),1) ! div_tau_z=d(tau_zz)/dz
+    if (nrank.eq.0) print  *, 'after derz',maxval(div_tau_x3),maxval(div_tau_y3) &
+,maxval(div_tau_z3)
 endif
 
 
@@ -259,7 +262,7 @@ call transpose_z_to_y(te3,te2)
 call transpose_z_to_y(tf3,tf2)
 
 if (iles > 0) then
-    call transpose_z_to_y(div_tau_x3,div_tau_x2)
+	call transpose_z_to_y(div_tau_x3,div_tau_x2)
     call transpose_z_to_y(div_tau_y3,div_tau_y2)
     call transpose_z_to_y(div_tau_z3,div_tau_z2)
     call transpose_z_to_y(xnu_sgs3,xnu_sgs2)
@@ -316,6 +319,8 @@ else
 endif
 
 if (iles == 1) then
+	if (nrank.eq.0) print  *, 'before dery',maxval(div_tau_x2),maxval(div_tau_y2) &
+,maxval(div_tau_z2)
     les_a2(:,:,:) = -2.0*xnu_sgs2(:,:,:) *0.5* (duxdy2(:,:,:) + duydx2(:,:,:) ) ! tau_xy = -2.0*nu*Sxy 
     call dery(les_b2, les_a3 ,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0) ! d(tau_xy)/dy
     div_tau_x2(:,:,:) = div_tau_x2(:,:,:) + les_b2(:,:,:) !div_tau_x = div_tau_x + d(tau_xy)/dy
@@ -323,8 +328,10 @@ if (iles == 1) then
     call dery(les_b2, les_a2 ,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1) ! d(tau_yy)/dy
     div_tau_y2(:,:,:) = div_tau_y2(:,:,:) + les_b2(:,:,:) !div_tau_y = div_tau_y + d(tau_yy)/dy
     les_a2(:,:,:) = -2.0*xnu_sgs2(:,:,:)*0.5*(duzdy2(:,:,:)+duydz2(:,:,:))! tau_zy = -2.0*nu*Szy 
-    call dery(les_b2, les_a3 ,di2,sy,ffy,fsy,fwy,ysize(1),ysize(2),ysize(3),0) ! d(tau_zy)/dy
+    call dery(les_b2, les_a3 ,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0) ! d(tau_zy)/dy
     div_tau_z2(:,:,:) = div_tau_z2(:,:,:) + les_b2(:,:,:) !div_tau_z = div_tau_z + d(tau_zy)/dy
+    if (nrank.eq.0) print  *, 'after dery',maxval(div_tau_x2),maxval(div_tau_y2) &
+,maxval(div_tau_z2)
 endif
 
 ta2(:,:,:)=ta2(:,:,:)+td2(:,:,:)
@@ -382,9 +389,11 @@ ta1(:,:,:)=xnu*ta1(:,:,:)-tg1(:,:,:)
 tb1(:,:,:)=xnu*tb1(:,:,:)-th1(:,:,:)
 tc1(:,:,:)=xnu*tc1(:,:,:)-ti1(:,:,:)
 if (iles == 1) then
-   ta1(:,:,:)=div_tau_x1(:,:,:) + ta1(:,:,:)
-   tb1(:,:,:)=div_tau_y1(:,:,:) + tb1(:,:,:)
-   tc1(:,:,:)=div_tau_z1(:,:,:) + tc1(:,:,:)
+	if (nrank.eq.0) print  *, maxval(ta1),maxval(tb1),maxval(tc1),maxval(div_tau_x1),maxval(div_tau_y1) &
+,maxval(div_tau_z1)
+   !ta1(:,:,:)=div_tau_x1(:,:,:) + ta1(:,:,:)
+   !tb1(:,:,:)=div_tau_y1(:,:,:) + tb1(:,:,:)
+   !tc1(:,:,:)=div_tau_z1(:,:,:) + tc1(:,:,:)
 endif
 
 end subroutine convdiff
