@@ -135,8 +135,14 @@ do itime=ifirst,ilast
            div_tau_x3,div_tau_y3,div_tau_z3)
  
       if (iscalar==1) then
+		if (iles > 0) then
+		 call scalar_les(ux1,uy1,uz1,phi1,phis1,phiss1,di1,tg1,th1,ti1,td1,&
+              uy2,uz2,phi2,di2,ta2,tb2,tc2,td2,uz3,phi3,di3,ta3,tb3,ep1,&
+			  xnu_sgs1,xnu_sgs2,xnu_sgs3,tau_phi_x1,tau_phi_y2,tau_phi_z3) 
+		else
          call scalar(ux1,uy1,uz1,phi1,phis1,phiss1,di1,tg1,th1,ti1,td1,&
               uy2,uz2,phi2,di2,ta2,tb2,tc2,td2,uz3,phi3,di3,ta3,tb3,ep1) 
+          endif
       endif
 
       !X PENCILS

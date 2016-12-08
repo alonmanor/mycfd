@@ -76,6 +76,7 @@ real(mytype), save, allocatable, dimension(:,:,:) :: div_tau_x1, div_tau_x2, div
 real(mytype), save, allocatable, dimension(:,:,:) :: div_tau_y1, div_tau_y2, div_tau_y3 !d(tau_yj)/dxj
 real(mytype), save, allocatable, dimension(:,:,:) :: div_tau_z1, div_tau_z2, div_tau_z3 !d(tau_zj)/dxj
 real(mytype), save, allocatable, dimension(:,:,:) :: les_a1,les_a2,les_a3,les_b1,les_b2 !les working variables
+real(mytype), save, allocatable, dimension(:,:,:) :: tau_phi_x1,tau_phi_y2,tau_phi_z3   ! nu*d(phi)/dx_i
 
 
 
@@ -133,6 +134,9 @@ contains
 		call alloc_x(duxdy1);  call alloc_x(duxdz1); 
 		call alloc_x(div_tau_x1);  call alloc_x(div_tau_y1); call alloc_x(div_tau_z1);
 		call alloc_x(xnu_sgs1);  call alloc_x(les_a1); call alloc_x(les_b1); 
+		if (iscalar.eq.1) then 
+			call alloc_x(tau_phi_x1); 
+		endif
 	endif
     allocate(sx(xsize(2),xsize(3)),vx(xsize(2),xsize(3)))
     !inflow/ouflow 2d arrays
@@ -191,6 +195,9 @@ contains
 		call alloc_y(duydz2);  call alloc_y(duxdz2); 
 		call alloc_y(div_tau_x2);  call alloc_y(div_tau_y2); call alloc_y(div_tau_z2);
 		call alloc_y(xnu_sgs2);  call alloc_y(les_a2); call alloc_y(les_b2); 
+		if (iscalar.eq.1) then 
+			call alloc_y(tau_phi_y2); 
+		endif
 	endif
     allocate(sy(ysize(1),ysize(3)),vy(ysize(1),ysize(3)))
 !Z PENCILS
@@ -206,6 +213,9 @@ contains
 		call alloc_z(duxdz3);  call alloc_z(duydz3); call alloc_z(duzdz3);
 		call alloc_z(div_tau_x3);  call alloc_z(div_tau_y3); call alloc_z(div_tau_z3);
 		call alloc_z(xnu_sgs3);  call alloc_z(les_a3); 
+		if (iscalar.eq.1) then 
+			call alloc_z(tau_phi_z3); 
+		endif
 	endif
     allocate(sz(zsize(1),zsize(2)),vz(zsize(1),zsize(2)))
 
