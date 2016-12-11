@@ -22,7 +22,7 @@
 1      #ifirst # First iteration   
 10000      #ilast  # Last iteration 
 2      #nscheme# Temporal scheme (1:AB2, 2: RK3, 3:RK4, 4:AB3)
-0      #istret # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
+3      #istret # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
 0.259065151  #beta   # Refinement parameter (beta) 
 1      #iskew  # (0:urotu, 1:skew, for the convective terms)
 0      #iscalar# (0: no scalar, 1:scalar)
@@ -44,4 +44,7 @@
 # explicit LES parameters
 #
 1          # SGS model (0: No LES, 1: Smagorinsky)
+#
+# additional
+1          #ipbl boundary layer? (1: yes, 0: no) if yes, ncly is overriden and set to 2. no slip BC are imposed at the surface
 #
