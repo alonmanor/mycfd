@@ -122,6 +122,10 @@ print *,'==========================================================='
 print *,''
 print *,''
 print *,''
+if ((ipbl.eq.1).and.(ncly.ne.1)) then
+print *, "Consistancy error- for ipbl==1 set ncly==1 "
+stop 
+endif
 if (itype.eq.1) print *,'Constant flow field'
 if (itype.eq.2) print *,'Channel flow'
 if (itype.eq.3) print *,'Wake flow'

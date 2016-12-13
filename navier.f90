@@ -1087,6 +1087,88 @@ if (ncly==2) then
    endif
    endif
 endif
+
+!****************************************************
+!ipbl == 1  -  no slip at the bottom, free slip at the top
+!****************************************************
+if (ipbl.eq.1) then
+   ! determine the processor grid in use
+   call MPI_CART_GET(DECOMP_2D_COMM_CART_X, 2, &
+         dims, dummy_periods, dummy_coords, code)
+
+
+   if (dims(1)==1) then
+      do k=1,xsize(3)
+      do i=1,xsize(1)
+         dpdxy1(i,k)=dpdxy1(i,k)*gdt(itr)
+         dpdzy1(i,k)=dpdzy1(i,k)*gdt(itr)
+      enddo
+      enddo
+!~       do k=1,xsize(3)
+!~       do i=1,xsize(1)
+!~          dpdxyn(i,k)=dpdxyn(i,k)*gdt(itr)
+!~          dpdzyn(i,k)=dpdzyn(i,k)*gdt(itr)
+!~       enddo
+!~       enddo
+   else
+      if (xstart(2)==1) then
+         do k=1,xsize(3)
+         do i=1,xsize(1)
+            dpdxy1(i,k)=dpdxy1(i,k)*gdt(itr)
+            dpdzy1(i,k)=dpdzy1(i,k)*gdt(itr)
+         enddo
+         enddo
+      endif
+!~       if (ny-(nym/dims(1))==xstart(2)) then
+!~          do k=1,xsize(3)
+!~          do i=1,xsize(1)
+!~             dpdxyn(i,k)=dpdxyn(i,k)*gdt(itr)
+!~             dpdzyn(i,k)=dpdzyn(i,k)*gdt(itr)
+!~          enddo
+!~          enddo
+!~       endif
+   endif
+
+
+   if (dims(1)==1) then
+      do k=1,xsize(3)
+      do i=1,xsize(1)
+         ux(i,1,k)=0.+dpdxy1(i,k)
+         uy(i,1,k)=0.
+         uz(i,1,k)=0.+dpdzy1(i,k)
+      enddo
+      enddo
+!~       do k=1,xsize(3)
+!~       do i=1,xsize(1)
+!~          ux(i,xsize(2),k)=0.+dpdxyn(i,k)
+!~          uy(i,xsize(2),k)=0.
+!~          uz(i,xsize(2),k)=0.+dpdzyn(i,k)
+!~       enddo
+!~       enddo
+   else
+!find j=1 and j=ny
+      if (xstart(2)==1) then
+         do k=1,xsize(3)
+         do i=1,xsize(1)
+            ux(i,1,k)=0.+dpdxy1(i,k)
+            uy(i,1,k)=0.
+            uz(i,1,k)=0.+dpdzy1(i,k)
+         enddo
+         enddo
+      endif
+!      print *,nrank,xstart(2),ny-(nym/p_row)
+!~        if (ny-(nym/dims(1))==xstart(2)) then
+!~          do k=1,xsize(3)
+!~          do i=1,xsize(1)
+!~             ux(i,xsize(2),k)=0.+dpdxyn(i,k)
+!~             uy(i,xsize(2),k)=0.
+!~             uz(i,xsize(2),k)=0.+dpdzyn(i,k)
+!~          enddo
+!~          enddo
+!~       endif
+ 
+   endif
+endif
 !****************************************************
 !********NCLZ==2*************************************
 !****************************************************
