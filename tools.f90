@@ -108,6 +108,9 @@ uzmin=1609.
 do k=1,xsize(3)
 do j=1,xsize(2)
 do i=1,xsize(1)
+   if (ux(i,j,k).ne.ux(i,j,k)) stop
+   if (uy(i,j,k).ne.uy(i,j,k)) stop
+   if (uz(i,j,k).ne.uz(i,j,k)) stop
    if (ux(i,j,k).gt.uxmax) uxmax=ux(i,j,k)
    if (uy(i,j,k).gt.uymax) uymax=uy(i,j,k)
    if (uz(i,j,k).gt.uzmax) uzmax=uz(i,j,k)
@@ -128,6 +131,7 @@ call MPI_REDUCE(uzmin,uzmin1,1,real_type,MPI_MIN,0,MPI_COMM_WORLD,code)
 if (nrank==0) then
    print *,'U,V,W max=',uxmax1,uymax1,uzmax1
    print *,'U,V,W min=',uxmin1,uymin1,uzmin1
+   print *,'cfl_x,cfl_y,cfl_z=',uxmax1*dt/dx,uymax1*dt/dy,uzmax1*dt/dz
 endif
 
 

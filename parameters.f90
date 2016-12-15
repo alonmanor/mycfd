@@ -105,9 +105,9 @@ read (10,1000) a
 read (10,1000) a
 read (10,*) iles
 read (10,1000) a
-read (10,1000) a
-read (10,*) ipbl
-read (10,1000) a
+!read (10,1000) a
+!read (10,*) ipbl
+!read (10,1000) a
 close(10) 
 if (nrank==0) then
 print *,'==========================================================='
@@ -122,8 +122,11 @@ print *,'==========================================================='
 print *,''
 print *,''
 print *,''
+if (itype.eq.10) then
+ipbl = 1
+endif
 if ((ipbl.eq.1).and.(ncly.ne.1)) then
-print *, "Consistancy error- for ipbl==1 set ncly==1 "
+print *, "Consistancy error- for itype==10 (PBL FLOW) set ncly==1 "
 stop 
 endif
 if (itype.eq.1) print *,'Constant flow field'
@@ -135,6 +138,7 @@ if (itype.eq.6) print *,'Taylor Green vortices'
 if (itype.eq.7) print *,'Cavity flow'
 if (itype.eq.8) print *,'Flat plate Boundary layer'
 if (itype.eq.9) print *,'Water tank'
+if (itype.eq.10) print *,'PBL flow'
 write(*,1101) nx,ny,nz
 write(*,1103) xlx,yly,zlz 
 write(*,1102) nclx,ncly,nclz 

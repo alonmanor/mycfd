@@ -494,7 +494,7 @@ call random_seed(put = code+63946*nrank*(/ (i - 1, i = 1, ii) /)) !
    do j=1,xsize(2)
    do i=1,xsize(1)
       ux1(i,j,k)=noise*ux1(i,j,k)
-      uy1(i,j,k)=noise*uy1(i,j,k)
+      uy1(i,j,k)=noise*uy1(i,j,k)*0.0
       uz1(i,j,k)=noise*uz1(i,j,k)
    enddo
    enddo
@@ -1138,13 +1138,13 @@ if (ipbl.eq.1) then
          uz(i,1,k)=0.+dpdzy1(i,k)
       enddo
       enddo
-!~       do k=1,xsize(3)
-!~       do i=1,xsize(1)
+      do k=1,xsize(3)
+      do i=1,xsize(1)
 !~          ux(i,xsize(2),k)=0.+dpdxyn(i,k)
-!~          uy(i,xsize(2),k)=0.
+         uy(i,xsize(2),k)=0.
 !~          uz(i,xsize(2),k)=0.+dpdzyn(i,k)
-!~       enddo
-!~       enddo
+      enddo
+      enddo
    else
 !find j=1 and j=ny
       if (xstart(2)==1) then
@@ -1157,15 +1157,15 @@ if (ipbl.eq.1) then
          enddo
       endif
 !      print *,nrank,xstart(2),ny-(nym/p_row)
-!~        if (ny-(nym/dims(1))==xstart(2)) then
-!~          do k=1,xsize(3)
-!~          do i=1,xsize(1)
+       if (ny-(nym/dims(1))==xstart(2)) then
+         do k=1,xsize(3)
+         do i=1,xsize(1)
 !~             ux(i,xsize(2),k)=0.+dpdxyn(i,k)
-!~             uy(i,xsize(2),k)=0.
+            uy(i,xsize(2),k)=0.
 !~             uz(i,xsize(2),k)=0.+dpdzyn(i,k)
-!~          enddo
-!~          enddo
-!~       endif
+         enddo
+         enddo
+      endif
  
    endif
 endif

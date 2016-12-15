@@ -389,6 +389,10 @@ if (iles == 1) then
     tb1(:,:,:)=-div_tau_y1(:,:,:) + tb1(:,:,:)
     tc1(:,:,:)=-div_tau_z1(:,:,:) + tc1(:,:,:)
 endif
+if (itype.eq.10) then
+    ta1(:,:,:)=ta1(:,:,:)+0.001
+endif
+
 
 end subroutine convdiff
 

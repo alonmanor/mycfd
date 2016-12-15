@@ -14,15 +14,25 @@ program visu_paraview
 !  character(4) :: chits
 
   write (*,*) 'nx, ny, nz   - Incompact3D'
-  read (*,*) nx, ny, nz
+!~   read (*,*) nx, ny, nz
+  nx=64
+  ny=65
+  nz=64
   write (*,*) 'xlx, yly, zlz   - Incompact3D'
-  read (*,*) xlx, yly, zlz
+!~   read (*,*) xlx, yly, zlz
+  xlx = 12
+  yly = 2
+  zlz = 4
   write (*,*) 'nclx, ncly, nclz   - Incompact3D'
-  read (*,*) nclx, ncly, nclz
+!~   read (*,*) nclx, ncly, nclz
+  nclx=0
+  ncly=1
+  nclz=0
   write (*,*) 'n files, first file, last file'
   read (*,*) nfiles,file1, filen
   write (*,*) 'Stretching in the y direction (Y=1/N=0)?'
-  read (*,*) istret
+!~   read (*,*) istret
+  istret = 0
 
 
   if (nclx==0) dx=xlx/nx
