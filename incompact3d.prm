@@ -43,7 +43,7 @@
 #
 # explicit LES parameters
 #
-0          # SGS model (0: No LES, 1: Smagorinsky)
+1          # SGS model (0: No LES, 1: Smagorinsky)
 #
 # additional
 0          #ipbl boundary layer? (1: yes, 0: no) if yes, ncly is overriden and set to 2. no slip BC are imposed at the surface

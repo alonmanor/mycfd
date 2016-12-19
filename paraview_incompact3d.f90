@@ -6,33 +6,51 @@ program visu_paraview
   real(4) :: xlx,yly,zlz,dt,dx,dy,dz
   integer(4) :: nfiles, icrfile, file1, filen, ifile, dig1, dig2, dig3, dig4
   real(4), allocatable :: yp(:),y1(:),y3(:)
-  integer(4) :: i, j, k, num, aig, ii, nfil,istret,nclx, ncly, nclz
+  integer(4) :: i, j, k, num, aig, ii, nfil,istret,nclx, ncly, nclz,iscalar
 
 !IF THE DATA ARE STORED WITH 3 DIGITS, IE UX001,UX002,ETC.
   character(3) :: chits
 !IF THE DATA ARE STORED WITH 4 DIGITS, IE UX0001,UX0002,ETC.
 !  character(4) :: chits
 
+open(101,file='param_file.txt',form='formatted',status='unknown')
+read(101,*) nx
+read(101,*) ny
+read(101,*) nz
+read(101,*) xlx
+read(101,*) yly
+read(101,*) zlz
+read(101,*) nclx
+read(101,*) ncly
+read(101,*) nclz
+read(101,*) istret
+read(101,*) iscalar
+
+
   write (*,*) 'nx, ny, nz   - Incompact3D'
+  write (*,*) nx,ny,nz 
 !~   read (*,*) nx, ny, nz
-  nx=64
-  ny=65
-  nz=64
+!~   nx=64
+!~   ny=65
+!~   nz=64
   write (*,*) 'xlx, yly, zlz   - Incompact3D'
+  write (*,*) xlx,yly,zlz 
 !~   read (*,*) xlx, yly, zlz
-  xlx = 12
-  yly = 2
-  zlz = 4
+!~   xlx = 12
+!~   yly = 2
+!~   zlz = 4
   write (*,*) 'nclx, ncly, nclz   - Incompact3D'
+  write (*,*) nclx,ncly,nclz
 !~   read (*,*) nclx, ncly, nclz
-  nclx=0
-  ncly=1
-  nclz=0
+!~   nclx=0
+!~   ncly=1
+!~   nclz=0
   write (*,*) 'n files, first file, last file'
   read (*,*) nfiles,file1, filen
   write (*,*) 'Stretching in the y direction (Y=1/N=0)?'
+  write (*,*) istret
 !~   read (*,*) istret
-  istret = 0
+!~   istret = 0
 
 
   if (nclx==0) dx=xlx/nx
@@ -149,18 +167,19 @@ program visu_paraview
     write(nfil,*)'               <DataItem Format="Binary" '
     write(nfil,*)'                DataType="Float" Precision="8" Endian="little"'
     write(nfil,*)'                Dimensions="',nz,ny,nx,'">'
-    write(nfil,*)'                  uy'//chits
+    write(nfil,*)'                  uz'//chits
     write(nfil,*)'               </DataItem>'
     write(nfil,*)'            </Attribute>'
-
-    write(nfil,*)'            <Attribute Name="vort" Center="Node">'
-    write(nfil,*)'               <DataItem Format="Binary" '
-    write(nfil,*)'                DataType="Float" Precision="8" Endian="little"'
-    write(nfil,*)'                Dimensions="',nz,ny,nx,'">'
-    write(nfil,*)'                  vort'//chits
-    write(nfil,*)'               </DataItem>'
-    write(nfil,*)'            </Attribute>'
-
+	
+	if (iscalar.eq.1) then
+		write(nfil,*)'            <Attribute Name="phi" Center="Node">'
+		write(nfil,*)'               <DataItem Format="Binary" '
+		write(nfil,*)'                DataType="Float" Precision="8" Endian="little"'
+		write(nfil,*)'                Dimensions="',nz,ny,nx,'">'
+		write(nfil,*)'                  phi'//chits
+		write(nfil,*)'               </DataItem>'
+		write(nfil,*)'            </Attribute>'
+	endif
 
      write(nfil,*)'        </Grid>'
 

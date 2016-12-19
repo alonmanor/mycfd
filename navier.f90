@@ -236,11 +236,13 @@ if (iin.eq.1) then
    enddo
    enddo
    if (iscalar==1) then
-      do k=1,xsize(3)
-      do j=1,xsize(2)
-         phi(1,j,k)=1.
-      enddo
-      enddo
+	  if (itype.eq.10) then
+		  do k=1,xsize(3)
+		  do j=1,xsize(2)
+			 phi(1,j,k)=0.0
+		  enddo
+		  enddo
+      endif
    endif
 endif
 
@@ -299,11 +301,13 @@ if (itype.ne.9) then
    enddo
    enddo
    if (iscalar==1) then
-      do k=1,xsize(3)
-      do j=1,xsize(2)
-         phi(nx,j,k)=phi(nx,j,k)-cx*(phi(nx,j,k)-phi(nx-1,j,k))
-      enddo
-      enddo
+	  if (itype.ne.10) then
+		  do k=1,xsize(3)
+		  do j=1,xsize(2)
+			 phi(nx,j,k)=phi(nx,j,k)-cx*(phi(nx,j,k)-phi(nx-1,j,k))
+		  enddo
+		  enddo
+      endif
    endif
 else
 print *,'NOT READY'
@@ -478,9 +482,9 @@ integer (kind=MPI_OFFSET_KIND) :: disp
 if (iin.eq.1) then !generation of a random noise
 
 
-call system_clock(count=code)
-call random_seed(size = ii)
-call random_seed(put = code+63946*nrank*(/ (i - 1, i = 1, ii) /)) !
+!~ call system_clock(count=code)
+!~ call random_seed(size = ii)
+!~ call random_seed(put = code+63946*nrank*(/ (i - 1, i = 1, ii) /)) !
 
 
     
@@ -494,7 +498,12 @@ call random_seed(put = code+63946*nrank*(/ (i - 1, i = 1, ii) /)) !
    do j=1,xsize(2)
    do i=1,xsize(1)
       ux1(i,j,k)=noise*ux1(i,j,k)
-      uy1(i,j,k)=noise*uy1(i,j,k)*0.0
+      if (itype.ne.10) then
+			uy1(i,j,k)=noise*uy1(i,j,k)
+	  else !boundary layer flow- avoid vertical perturbation
+			uy1(i,j,k)=noise*uy1(i,j,k)*0.0
+			ux1(i,j,k)=ux1(i,j,k)+1.0
+	  endif
       uz1(i,j,k)=noise*uz1(i,j,k)
    enddo
    enddo
@@ -515,19 +524,35 @@ call random_seed(put = code+63946*nrank*(/ (i - 1, i = 1, ii) /)) !
    enddo
 
    if (iscalar==1) then
+   if (itype.ne.10) then
       do k=1,xsize(3)
       do j=1,xsize(2)
       do i=1,xsize(1)
-   !      if ((j+xstart(2)-1).ge.nym) then
-   !         phi1(i,j,k)=1.
-   !      else
+         if ((j+xstart(2)-1).ge.nym) then
+            phi1(i,j,k)=1.
+         else
             phi1(i,j,k)=0.
-   !      endif
+         endif
          phis1(i,j,k)=phi1(i,j,k)
          phiss1(i,j,k)=phis1(i,j,k)
       enddo
       enddo
       enddo
+      else !boundary layer (itype.eq.10)
+      do k=1,xsize(3)
+      do j=1,xsize(2)
+      do i=1,xsize(1)
+!~          if ((j+xstart(2)-1).eq.1) then
+!~             phi1(i,j,k)=1.
+!~          else
+            phi1(i,j,k)=0.
+!~          endif
+         phis1(i,j,k)=phi1(i,j,k)
+         phiss1(i,j,k)=phis1(i,j,k)
+      enddo
+      enddo
+      enddo
+      endif
    endif
 endif
 
@@ -571,7 +596,7 @@ if (iles > 0) then !initialize the deltabar array
 	   else
 			delta_bar(j) = (dx*dz*dy)**(1.0/3.0)
 	   endif
-	   if (nrank.eq.0) print *,'delta_bar',j,delta_bar(j)
+!~ 	   if (nrank.eq.0) print *,'delta_bar',j,delta_bar(j)
 	enddo
 	Csmag = 0.16
 endif
@@ -919,6 +944,44 @@ end subroutine body
 
 !****************************************************************************
 !
+subroutine scalar_sources(phi)
+!
+!****************************************************************************
+USE decomp_2d
+USE variables
+USE param
+USE var
+USE MPI
+
+implicit none
+
+real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: phi
+integer :: i,j,k,code
+real(mytype) :: ut,ut1,utt,ut11
+integer, dimension(2) :: dims, dummy_coords
+logical, dimension(2) :: dummy_periods
+
+if (xstart(2) == 1) then
+	do i=1,xsize(1)
+		do k=1,xsize(3)
+			phi(i,1,k) = 1.0
+		enddo
+	enddo
+endif
+
+
+if (xend(2) == ny) then
+	do i=1,xsize(1)
+		do k=1,xsize(3)
+			phi(i,ny,k) = 1.0
+		enddo
+	enddo
+endif
+
+end subroutine scalar_sources
+
+!****************************************************************************
+!
 subroutine pre_correc(ux,uy,uz)
 !
 !****************************************************************************
@@ -1087,7 +1150,6 @@ if (ncly==2) then
    endif
    endif
 endif
-
 !****************************************************
 !ipbl == 1  -  no slip at the bottom, free slip at the top
 !****************************************************
@@ -1095,6 +1157,8 @@ if (ipbl.eq.1) then
    ! determine the processor grid in use
    call MPI_CART_GET(DECOMP_2D_COMM_CART_X, 2, &
          dims, dummy_periods, dummy_coords, code)
+!~     print *,'dims', (dims(i), i=1,2)
+	
 
 
    if (dims(1)==1) then
@@ -1147,7 +1211,8 @@ if (ipbl.eq.1) then
       enddo
    else
 !find j=1 and j=ny
-      if (xstart(2)==1) then
+      if (xstart(2)==1) then  !lower boundary- no slip
+!~ 		 print *,'lower bdy nrank',nrank,'k=',xstart(3),'->',xend(3),'i=',xstart(1),'->',xend(1)
          do k=1,xsize(3)
          do i=1,xsize(1)
             ux(i,1,k)=0.+dpdxy1(i,k)
@@ -1157,7 +1222,7 @@ if (ipbl.eq.1) then
          enddo
       endif
 !      print *,nrank,xstart(2),ny-(nym/p_row)
-       if (ny-(nym/dims(1))==xstart(2)) then
+       if (ny-(nym/dims(1))==xstart(2)) then  !upper boundary- free slip
          do k=1,xsize(3)
          do i=1,xsize(1)
 !~             ux(i,xsize(2),k)=0.+dpdxyn(i,k)

@@ -108,6 +108,13 @@ call decomp_info_init(nxm, ny, nz, ph4)
 call decomp_info_init(nxm, ny, nz, ph2)  
 call decomp_info_init(nxm, nym, nz, ph3) 
 
+print *,'rank=',nrank
+print *,'xstart=',( xstart(j), j=1,3)
+print *,'xend=',( xend(j), j=1,3)
+print *,'ystart=',( ystart(j), j=1,3)
+print *,'yend=',( yend(j), j=1,3)
+print *,'zstart=',( zstart(j), j=1,3)
+print *,'zend=',( zend(j), j=1,3)
 
 do itime=ifirst,ilast
    t=(itime-1)*dt
@@ -150,6 +157,7 @@ do itime=ifirst,ilast
 
 
       call pre_correc(ux1,uy1,uz1)
+      if (iscalar==1) call scalar_sources(phi1)
 
       if (ivirt==1) then !solid body old school
          !we are in X-pencil

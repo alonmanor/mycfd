@@ -122,13 +122,6 @@ print *,'==========================================================='
 print *,''
 print *,''
 print *,''
-if (itype.eq.10) then
-ipbl = 1
-endif
-if ((ipbl.eq.1).and.(ncly.ne.1)) then
-print *, "Consistancy error- for itype==10 (PBL FLOW) set ncly==1 "
-stop 
-endif
 if (itype.eq.1) print *,'Constant flow field'
 if (itype.eq.2) print *,'Channel flow'
 if (itype.eq.3) print *,'Wake flow'
@@ -184,6 +177,14 @@ endif
  1110 format(' Object length     : ',F6.2)
  1113 format(' Schmidt number    : ',F6.2)
 endif
+if (itype.eq.10) then
+	ipbl = 1
+	if (ncly.ne.1) then
+		print *, "Consistancy error- for itype==10 (PBL FLOW) set ncly==1 "
+		stop 
+	endif
+endif
+
 xnu=1./re 
    
 if (nclx==0) dx=xlx/nx 

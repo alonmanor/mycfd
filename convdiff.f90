@@ -70,6 +70,7 @@ real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: div_tau_x3,div_tau_y3,div_
 
 integer :: ijk,nvect1,nvect2,nvect3,i,j,k
 real(mytype) :: x,y,z
+integer,dimension(3) :: vdebug
 
 
 nvect1=xsize(1)*xsize(2)*xsize(3)
@@ -233,6 +234,7 @@ if (iles > 0) then !calculate nu_SGS=(delta*C_S)^2 * sqrt(2*Sij*Sij)
     else
 		do ijk=1,nvect3
 			xnu_sgs3(ijk,1,1) = (delta_bar(1) * Csmag)**2.0 * sqrt(xnu_sgs3(ijk,1,1))
+!~ 			xnu_sgs3(ijk,1,1) = 10*xnu
 		enddo
     endif
 endif
@@ -319,13 +321,13 @@ endif
 
 if (iles == 1) then
     les_a2(:,:,:) = -2.0*xnu_sgs2(:,:,:) *0.5* (duxdy2(:,:,:) + duydx2(:,:,:) ) ! tau_xy = -2.0*nu*Sxy 
-    call dery(les_b2, les_a3 ,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0) ! d(tau_xy)/dy
+    call dery(les_b2, les_a2 ,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0) ! d(tau_xy)/dy
     div_tau_x2(:,:,:) = div_tau_x2(:,:,:) + les_b2(:,:,:) !div_tau_x = div_tau_x + d(tau_xy)/dy
     les_a2(:,:,:) = -2.0*xnu_sgs2(:,:,:) * duydy2(:,:,:)                            ! tau_yy = -2.0*nu*Syy 
     call dery(les_b2, les_a2 ,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1) ! d(tau_yy)/dy
     div_tau_y2(:,:,:) = div_tau_y2(:,:,:) + les_b2(:,:,:) !div_tau_y = div_tau_y + d(tau_yy)/dy
     les_a2(:,:,:) = -2.0*xnu_sgs2(:,:,:)*0.5*(duzdy2(:,:,:)+duydz2(:,:,:))! tau_zy = -2.0*nu*Szy 
-    call dery(les_b2, les_a3 ,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0) ! d(tau_zy)/dy
+    call dery(les_b2, les_a2 ,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0) ! d(tau_zy)/dy
     div_tau_z2(:,:,:) = div_tau_z2(:,:,:) + les_b2(:,:,:) !div_tau_z = div_tau_z + d(tau_zy)/dy
 endif
 
@@ -363,6 +365,8 @@ ta1(:,:,:)=ta1(:,:,:)+td1(:,:,:)
 tb1(:,:,:)=tb1(:,:,:)+te1(:,:,:)
 tc1(:,:,:)=tc1(:,:,:)+tf1(:,:,:)
 
+
+
 !if (nrank==1) print *,'WARNING rotating channel',itime
 !tg1(:,:,:)=tg1(:,:,:)-2./18.*uy1(:,:,:)
 !th1(:,:,:)=th1(:,:,:)-2./18.*ux1(:,:,:)
@@ -371,7 +375,7 @@ if (iles == 1) then
     les_a1(:,:,:) = -2.0*xnu_sgs1(:,:,:) * duxdx1(:,:,:)  ! tau_xx = -2.0*nu*Sxx 
     call derx(les_b1, les_a1 ,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1) ! d(tau_xx)/dx
     div_tau_x1(:,:,:) = div_tau_x1(:,:,:) + les_b1(:,:,:) !div_tau_x = div_tau_x + d(tau_xx)/dx
-    les_a1(:,:,:) = -2.0*xnu_sgs1(:,:,:) * 0.5 *(duxdy1(:,:,:)+duydx1(:,:,:))                            ! tau_xy = -2.0*nu*Sxy 
+    les_a1(:,:,:) = -2.0*xnu_sgs1(:,:,:) * 0.5 *(duxdy1(:,:,:)+duydx1(:,:,:))   ! tau_xy = -2.0*nu*Sxy 
     call derx(les_b1, les_a1 ,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0) ! d(tau_xy)/dx
     div_tau_y1(:,:,:) = div_tau_y1(:,:,:) + les_b1(:,:,:) !div_tau_y = div_tau_y + d(tau_xy)/dx
     les_a1(:,:,:) = -2.0*xnu_sgs1(:,:,:) * 0.5* (duzdx1(:,:,:) + duxdz1(:,:,:) )! tau_xz = -2.0*nu*Sxz 
@@ -380,7 +384,6 @@ if (iles == 1) then
 endif
 
 !FINAL SUM: DIFF TERMS + CONV TERMS
-!print *,xnu*maxval(ta1),maxval(div_tau_x1)
 ta1(:,:,:)=xnu*ta1(:,:,:)-tg1(:,:,:)
 tb1(:,:,:)=xnu*tb1(:,:,:)-th1(:,:,:)
 tc1(:,:,:)=xnu*tc1(:,:,:)-ti1(:,:,:)
@@ -390,7 +393,7 @@ if (iles == 1) then
     tc1(:,:,:)=-div_tau_z1(:,:,:) + tc1(:,:,:)
 endif
 if (itype.eq.10) then
-    ta1(:,:,:)=ta1(:,:,:)+0.001
+    ta1(:,:,:)=ta1(:,:,:)+0.1
 endif
 
 
