@@ -48,8 +48,8 @@ module variables
 !2-->every 2 mesh nodes
 !4-->every 4 mesh nodes
 !nvisu = size for visualization collection
-!~ integer,parameter :: nx=128,ny=129,nz=84
-integer,parameter :: nx=64,ny=65,nz=42
+integer,parameter :: nx=128,ny=129,nz=84
+!~ integer,parameter :: nx=64,ny=65,nz=42
 integer,parameter :: nstat=1,nvisu=1
 integer,parameter :: p_row=2,p_col=2
 integer,parameter :: nxm=nx,nym=ny-1,nzm=nz 
@@ -132,7 +132,7 @@ real(mytype) :: alpha,beta
 
 !for implicit LES
 real(mytype), dimension(ny) :: delta_bar
-real(mytype) :: Csmag
+real(mytype) :: Csmag,Csigma
 end module variables
 
 module param

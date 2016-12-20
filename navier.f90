@@ -598,7 +598,7 @@ if (iles > 0) then !initialize the deltabar array
 	   endif
 !~ 	   if (nrank.eq.0) print *,'delta_bar',j,delta_bar(j)
 	enddo
-	Csmag = 0.16
+	Csmag = 0.16; Csigma = 1.35
 endif
 
 return

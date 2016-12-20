@@ -214,29 +214,13 @@ td3(:,:,:)=ta3(:,:,:)
 te3(:,:,:)=tb3(:,:,:)
 tf3(:,:,:)=tc3(:,:,:)
 
-if (iles > 0) then !calculate nu_SGS=(delta*C_S)^2 * sqrt(2*Sij*Sij)
-    do ijk=1,nvect3
-       xnu_sgs3(ijk,1,1) = 2.0 * duxdx3(ijk,1,1) * duxdx3(ijk,1,1)
-       xnu_sgs3(ijk,1,1) = 2.0 * duydy3(ijk,1,1) * duydy3(ijk,1,1) + xnu_sgs3(ijk,1,1)
-       xnu_sgs3(ijk,1,1) = 2.0 * duzdz3(ijk,1,1) * duzdz3(ijk,1,1) + xnu_sgs3(ijk,1,1)
-       xnu_sgs3(ijk,1,1) = ( duxdy3(ijk,1,1) + duydx3(ijk,1,1) )  ** 2.0 + xnu_sgs3(ijk,1,1)
-       xnu_sgs3(ijk,1,1) = ( duxdz3(ijk,1,1) + duzdx3(ijk,1,1) )  ** 2.0 + xnu_sgs3(ijk,1,1)
-       xnu_sgs3(ijk,1,1) = ( duydz3(ijk,1,1) + duzdy3(ijk,1,1) )  ** 2.0 + xnu_sgs3(ijk,1,1)
-    enddo
-    if (istret > 0) then
-		do j=1,zsize(2)
-			do i=1,zsize(1)
-				do k=1,zsize(3)
-					xnu_sgs3(i,j,k) = (delta_bar(zstart(2)-1+j) * Csmag)**2.0 * sqrt(xnu_sgs3(i,j,k))
-				enddo
-			enddo
-		enddo
-    else
-		do ijk=1,nvect3
-			xnu_sgs3(ijk,1,1) = (delta_bar(1) * Csmag)**2.0 * sqrt(xnu_sgs3(ijk,1,1))
-!~ 			xnu_sgs3(ijk,1,1) = 10*xnu
-		enddo
-    endif
+if (iles.eq.1) then !calculate nu_SGS for Smagorinsky SGS model
+	call xnu_smag(duxdx3,duydx3,duzdx3,duxdy3,duydy3,duzdy3,&
+     duxdz3,duydz3,duzdz3,xnu_sgs3)
+endif
+if (iles.eq.2) then !calculate nu_SGS for sigma SGS model
+	call xnu_sigma(duxdx3,duydx3,duzdx3,duxdy3,duydy3,duzdy3,&
+     duxdz3,duydz3,duzdz3,xnu_sgs3)
 endif
 
 !DIFFUSIVE TERMS IN Z
@@ -244,7 +228,7 @@ call derzz (ta3,ux3,di3,sz,sfzp,sszp,swzp,zsize(1),zsize(2),zsize(3),1)
 call derzz (tb3,uy3,di3,sz,sfzp,sszp,swzp,zsize(1),zsize(2),zsize(3),1)
 call derzz (tc3,uz3,di3,sz,sfz ,ssz ,swz ,zsize(1),zsize(2),zsize(3),0)
 
-if (iles == 1) then
+if ((iles.eq.1).or.(iles.eq.2)) then
     les_a3(:,:,:) = -2.0*xnu_sgs3(:,:,:) * 0.5*(duxdz3(:,:,:) + duzdx3(:,:,:) ) ! tau_xz = -2.0*nu*Sxz 
     call derz(div_tau_x3, les_a3 ,di3,sz,ffz,fsz,fwz,zsize(1),zsize(2),zsize(3),0) ! div_tau_x=d(tau_xz)/dz
     les_a3(:,:,:) = -2.0*xnu_sgs3(:,:,:) * 0.5*(duydz3(:,:,:) + duzdy3(:,:,:) ) ! tau_yz = -2.0*nu*Syz 
@@ -319,7 +303,7 @@ else
    call deryy (tf2,uz2,di2,sy,sfyp,ssyp,swyp,ysize(1),ysize(2),ysize(3),1) 
 endif
 
-if (iles == 1) then
+if ((iles.eq.1).or.(iles.eq.2)) then
     les_a2(:,:,:) = -2.0*xnu_sgs2(:,:,:) *0.5* (duxdy2(:,:,:) + duydx2(:,:,:) ) ! tau_xy = -2.0*nu*Sxy 
     call dery(les_b2, les_a2 ,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0) ! d(tau_xy)/dy
     div_tau_x2(:,:,:) = div_tau_x2(:,:,:) + les_b2(:,:,:) !div_tau_x = div_tau_x + d(tau_xy)/dy
@@ -371,7 +355,7 @@ tc1(:,:,:)=tc1(:,:,:)+tf1(:,:,:)
 !tg1(:,:,:)=tg1(:,:,:)-2./18.*uy1(:,:,:)
 !th1(:,:,:)=th1(:,:,:)-2./18.*ux1(:,:,:)
 
-if (iles == 1) then
+if ((iles.eq.1).or.(iles.eq.2)) then
     les_a1(:,:,:) = -2.0*xnu_sgs1(:,:,:) * duxdx1(:,:,:)  ! tau_xx = -2.0*nu*Sxx 
     call derx(les_b1, les_a1 ,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1) ! d(tau_xx)/dx
     div_tau_x1(:,:,:) = div_tau_x1(:,:,:) + les_b1(:,:,:) !div_tau_x = div_tau_x + d(tau_xx)/dx
@@ -387,7 +371,7 @@ endif
 ta1(:,:,:)=xnu*ta1(:,:,:)-tg1(:,:,:)
 tb1(:,:,:)=xnu*tb1(:,:,:)-th1(:,:,:)
 tc1(:,:,:)=xnu*tc1(:,:,:)-ti1(:,:,:)
-if (iles == 1) then
+if ((iles.eq.1).or.(iles.eq.2)) then
 	ta1(:,:,:)=-div_tau_x1(:,:,:) + ta1(:,:,:)
     tb1(:,:,:)=-div_tau_y1(:,:,:) + tb1(:,:,:)
     tc1(:,:,:)=-div_tau_z1(:,:,:) + tc1(:,:,:)

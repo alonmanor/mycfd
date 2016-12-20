@@ -162,6 +162,9 @@ else
 	if (iles.eq.1) then
 		print *,'Smagorinsky SGS model'
 	endif
+	if (iles.eq.2) then
+		print *,'sigma SGS model'
+	endif
 endif
 
 
