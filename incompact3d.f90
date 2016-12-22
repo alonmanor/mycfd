@@ -108,13 +108,16 @@ call decomp_info_init(nxm, ny, nz, ph4)
 call decomp_info_init(nxm, ny, nz, ph2)  
 call decomp_info_init(nxm, nym, nz, ph3) 
 
-print *,'rank=',nrank
+print *,'proc.=',nrank
 print *,'xstart=',( xstart(j), j=1,3)
 print *,'xend=',( xend(j), j=1,3)
+print *,'xsize=',( xsize(j), j=1,3)
 print *,'ystart=',( ystart(j), j=1,3)
 print *,'yend=',( yend(j), j=1,3)
+print *,'ysize=',( ysize(j), j=1,3)
 print *,'zstart=',( zstart(j), j=1,3)
 print *,'zend=',( zend(j), j=1,3)
+print *,'zsize=',( zsize(j), j=1,3)
 
 do itime=ifirst,ilast
    t=(itime-1)*dt

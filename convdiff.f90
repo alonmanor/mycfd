@@ -47,9 +47,11 @@ subroutine convdiff(ux1,uy1,uz1,ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1,&
 USE param
 USE variables
 USE decomp_2d
+use mymath
 
 
 implicit none
+
 
 real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1
 real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
@@ -213,20 +215,26 @@ endif
 td3(:,:,:)=ta3(:,:,:)
 te3(:,:,:)=tb3(:,:,:)
 tf3(:,:,:)=tc3(:,:,:)
-
 if (iles.eq.1) then !calculate nu_SGS for Smagorinsky SGS model
 	call xnu_smag(duxdx3,duydx3,duzdx3,duxdy3,duydy3,duzdy3,&
      duxdz3,duydz3,duzdz3,xnu_sgs3)
 endif
 if (iles.eq.2) then !calculate nu_SGS for sigma SGS model
-	call xnu_sigma(duxdx3,duydx3,duzdx3,duxdy3,duydy3,duzdy3,&
-     duxdz3,duydz3,duzdz3,xnu_sgs3)
+	if (itime>5) then !march a few timesteps with smagorinsky, to allow legal G_ij to form
+		call xnu_sigma(duxdx3,duydx3,duzdx3,duxdy3,duydy3,duzdy3,&
+		 duxdz3,duydz3,duzdz3,xnu_sgs3)
+    else
+		call xnu_smag(duxdx3,duydx3,duzdx3,duxdy3,duydy3,duzdy3,&
+		 duxdz3,duydz3,duzdz3,xnu_sgs3)
+    endif
 endif
-
+	
 !DIFFUSIVE TERMS IN Z
 call derzz (ta3,ux3,di3,sz,sfzp,sszp,swzp,zsize(1),zsize(2),zsize(3),1)
 call derzz (tb3,uy3,di3,sz,sfzp,sszp,swzp,zsize(1),zsize(2),zsize(3),1)
 call derzz (tc3,uz3,di3,sz,sfz ,ssz ,swz ,zsize(1),zsize(2),zsize(3),0)
+
+
 
 if ((iles.eq.1).or.(iles.eq.2)) then
     les_a3(:,:,:) = -2.0*xnu_sgs3(:,:,:) * 0.5*(duxdz3(:,:,:) + duzdx3(:,:,:) ) ! tau_xz = -2.0*nu*Sxz 
@@ -235,6 +243,14 @@ if ((iles.eq.1).or.(iles.eq.2)) then
     call derz(div_tau_y3, les_a3 ,di3,sz,ffz,fsz,fwz,zsize(1),zsize(2),zsize(3),0) ! div_tau_y=d(tau_yz)/dz
     les_a3(:,:,:) = -2.0*xnu_sgs3(:,:,:) * duzdz3(:,:,:)                                   ! tau_zz = -2.0*nu*Szz 
     call derz(div_tau_z3, les_a3 ,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),1) ! div_tau_z=d(tau_zz)/dz
+!~     call nanhunt(xnu_sgs3,zsize(1),zsize(2),zsize(3))
+!~ 	do i=1,xsize(1)
+!~ 	do j=1,xsize(2)
+!~ 	do k=1,xsize(3)
+!~ 	print *,nrank,i,j,k,duzdz3(i,j,k)
+!~ 	enddo
+!~ 	enddo
+!~ 	enddo
 endif
 
 

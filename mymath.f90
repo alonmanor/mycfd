@@ -88,14 +88,33 @@ end subroutine eigvec
 		
 		p = 1.0/6.0*(Q11**2.0+Q22**2.0+Q33**2.0+2*G12**2.0+2*G13**2.0+2*G23**2.0)
 		eta=1.0/3.0*atan(sqrt(p**3.0-q**2.0)/q)
-		print *,'m=',m
-		print *,'q=',q
-		print *,'p=',p
-		print *,'eta=',eta
+!~ 		print *,'m=',m
+!~ 		print *,'q=',q
+!~ 		print *,'p=',p
+!~ 		print *,'eta=',eta
 		x1 = m+2*sqrt(p)*cos(eta)
 		x2 = m-sqrt(p)*(cos(eta) + sqrt(three)*sin(eta))
 		x3 = m-sqrt(p)*(cos(eta) - sqrt(three)*sin(eta))
         call sort3(x1,x2,x3)
         return
 end subroutine eig_sym_smith
+
+
+subroutine nanhunt(A,nx,ny,nz)
+	USE decomp_2d
+	real(mytype),dimension(:,:,:)::A
+	integer nx,ny,nz
+	integer i,j,k
+	do i=1,nx
+	do j=1,ny
+	do k=1,nz
+	if (A(i,j,k).ne.A(i,j,k)) then
+	print *,'proc. ',nrank,'Nan at ',i,j,k
+	stop
+	endif
+	enddo
+	enddo
+	enddo
+end subroutine nanhunt
+
 end module mymath
