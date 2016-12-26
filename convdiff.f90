@@ -128,6 +128,10 @@ else !SKEW!
             duydx1(ijk,1,1) = tb1(ijk,1,1)
             duzdx1(ijk,1,1) = tc1(ijk,1,1)
         enddo
+        if ((iles.eq.4).or.(iles.eq.5)) then
+			call k_sgs_circular(ux1,uy1,uz1,k_sgs1,xsize(1),&
+				xsize(2),xsize(3),e_svm_y1,1)
+        endif
    endif
 
    do ijk=1,nvect1
@@ -146,6 +150,9 @@ else !SKEW!
        call transpose_x_to_y(duxdx1,duxdx2)
        call transpose_x_to_y(duydx1,duydx2)
        call transpose_x_to_y(duzdx1,duzdx2)
+       if ((iles.eq.4).or.(iles.eq.5)) then
+		call transpose_y_to_z(k_sgs1,k_sgs2)
+       endif
    endif
 !WORK Y-PENCILS
    do ijk=1,nvect2
@@ -184,6 +191,9 @@ else !SKEW!
        call transpose_y_to_z(duxdx2,duxdx3)
        call transpose_y_to_z(duydx2,duydx3)
        call transpose_y_to_z(duzdx2,duzdx3)
+       if ((iles.eq.4).or.(iles.eq.5)) then
+		call transpose_y_to_z(k_sgs2,k_sgs3)
+       endif
    endif
 !WORK Z-PENCILS
    do ijk=1,nvect3
@@ -203,6 +213,10 @@ else !SKEW!
             duydz3(ijk,1,1) = te3(ijk,1,1)
             duzdz3(ijk,1,1) = tf3(ijk,1,1)
         enddo
+        if ((iles.eq.4).or.(iles.eq.5)) then
+			call k_sgs_circular(ux3,uy3,uz3,k_sgs3,zsize(1),&
+				zsize(2),zsize(3),e_svm_y3,3)
+        endif
    endif
    do ijk=1,nvect3
       ta3(ijk,1,1)=ta3(ijk,1,1)+0.5*tg3(ijk,1,1)+0.5*uz3(ijk,1,1)*td3(ijk,1,1)
@@ -228,6 +242,31 @@ if (iles.eq.2) then !calculate nu_SGS for sigma SGS model
 		 duxdz3,duydz3,duzdz3,xnu_sgs3)
     endif
 endif
+if (iles.eq.4) then !SVM using largest EV of S_ij
+	call e_svm_s(duxdx3,duydx3,duzdx3,duxdy3,duydy3,duzdy3,&
+		 duxdz3,duydz3,duzdz3,e_svm_x3,e_svm_y3,e_svm_z3)
+endif
+if (iles.eq.5) then !SVM using vorticity
+	call e_svm_v(duxdx3,duydx3,duzdx3,duxdy3,duydy3,duzdy3,&
+		 duxdz3,duydz3,duzdz3,e_svm_x3,e_svm_y3,e_svm_z3)
+endif
+if ((iles.eq.4).or.(iles.eq.5)) then
+	call transpose_x_to_y(e_svm_x3,e_svm_x2)
+	call transpose_x_to_y(e_svm_y3,e_svm_y2)
+	call transpose_x_to_y(e_svm_z3,e_svm_z2)
+	call transpose_y_to_z(e_svm_x2,e_svm_x1)
+	call transpose_y_to_z(e_svm_y2,e_svm_y1)
+	call transpose_y_to_z(e_svm_z2,e_svm_z1)
+	!partial SGS TKE in k_sgs1
+	k_sgs_circular(ux1,uy1,uz1,k_sgs1,xsize(1),&
+				xsize(2),xsize(3),e_svm_y1,1)
+	call transpose_x_to_y(k_sgs1,k_sgs2)
+	call transpose_y_to_z(k_sgs2,k_sgs3)
+	k_sgs_circular(ux3,uy3,uz3,k_sgs3,zsize(1),&
+				zsize(2),zsize(3),e_svm_y3,3)
+	!full SGS TKE in k_sgs3
+endif
+
 	
 !DIFFUSIVE TERMS IN Z
 call derzz (ta3,ux3,di3,sz,sfzp,sszp,swzp,zsize(1),zsize(2),zsize(3),1)
