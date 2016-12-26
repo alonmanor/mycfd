@@ -291,6 +291,14 @@ if ((iles.eq.1).or.(iles.eq.2)) then
 !~ 	enddo
 !~ 	enddo
 endif
+if ((iles.eq.4).or.(iles.eq.5)) then
+	les_a3(:,:,:) =  - k_sgs3(:,:,:) * (      e_svm_x3(:,:,:) * e_svm_z3(:,:,:)) !tau_xz = -K(e_x*e_z)
+	call derz(div_tau_x3, les_a3 ,di3,sz,ffz,fsz,fwz,zsize(1),zsize(2),zsize(3),0) ! div_tau_x=d(tau_xz)/dz
+	les_a3(:,:,:) =  - k_sgs3(:,:,:) * (      e_svm_y3(:,:,:) * e_svm_z3(:,:,:)) !tau_yz = -K(e_y*e_z)
+	call derz(div_tau_y3, les_a3 ,di3,sz,ffz,fsz,fwz,zsize(1),zsize(2),zsize(3),0) ! div_tau_y=d(tau_yz)/dz
+	les_a3(:,:,:) =    k_sgs3(:,:,:) * (1.0 - e_svm_z3(:,:,:) * e_svm_z3(:,:,:)) !tau_zz = -K(1 - e_z*e_z)
+	call derz(div_tau_z3, les_a3 ,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),1) ! div_tau_z=d(tau_zz)/dz
+endif
 
 
 !WORK Y-PENCILS
@@ -369,6 +377,17 @@ if ((iles.eq.1).or.(iles.eq.2)) then
     call dery(les_b2, les_a2 ,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0) ! d(tau_zy)/dy
     div_tau_z2(:,:,:) = div_tau_z2(:,:,:) + les_b2(:,:,:) !div_tau_z = div_tau_z + d(tau_zy)/dy
 endif
+if ((iles.eq.4).or.(iles.eq.5)) then
+	les_a2(:,:,:) = - k_sgs2(:,:,:) * (      e_svm_x2(:,:,:) * e_svm_y2(:,:,:)) ! tau_xy = -K(e_x*e_y)
+    call dery(les_b2, les_a2 ,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0) ! d(tau_xy)/dy
+    div_tau_x2(:,:,:) = div_tau_x2(:,:,:) + les_b2(:,:,:) !div_tau_x = div_tau_x + d(tau_xy)/dy
+    les_a2(:,:,:) =   k_sgs2(:,:,:) * (1.0 - e_svm_y2(:,:,:) * e_svm_y2(:,:,:)) !  tau_yy = K(1-e_y*e_y)
+    call dery(les_b2, les_a2 ,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1) ! d(tau_yy)/dy
+    div_tau_y2(:,:,:) = div_tau_y2(:,:,:) + les_b2(:,:,:) !div_tau_y = div_tau_y + d(tau_yy)/dy
+    les_a2(:,:,:) =  - k_sgs2(:,:,:) * (      e_svm_z2(:,:,:) * e_svm_y2(:,:,:)) ! tau_zy = -K(e_z*e_y)
+    call dery(les_b2, les_a2 ,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0) ! d(tau_zy)/dy
+    div_tau_z2(:,:,:) = div_tau_z2(:,:,:) + les_b2(:,:,:) !div_tau_z = div_tau_z + d(tau_zy)/dy
+endif
 
 ta2(:,:,:)=ta2(:,:,:)+td2(:,:,:)
 tb2(:,:,:)=tb2(:,:,:)+te2(:,:,:)
@@ -418,6 +437,17 @@ if ((iles.eq.1).or.(iles.eq.2)) then
     call derx(les_b1, les_a1 ,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0) ! d(tau_xy)/dx
     div_tau_y1(:,:,:) = div_tau_y1(:,:,:) + les_b1(:,:,:) !div_tau_y = div_tau_y + d(tau_xy)/dx
     les_a1(:,:,:) = -2.0*xnu_sgs1(:,:,:) * 0.5* (duzdx1(:,:,:) + duxdz1(:,:,:) )! tau_xz = -2.0*nu*Sxz 
+    call derx(les_b1, les_a1 ,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0) ! d(tau_xz)/dx
+    div_tau_z1(:,:,:) = div_tau_z1(:,:,:) + les_b1(:,:,:) !div_tau_z = div_tau_z + d(tau_xz)/dx
+endif
+if ((iles.eq.4).or.(iles.eq.5)) then
+    les_a1(:,:,:) =   k_sgs2(:,:,:) * (1.0 - e_svm_y2(:,:,:) * e_svm_y2(:,:,:))   ! tau_xx = K(1-e_x*e_x)
+    call derx(les_b1, les_a1 ,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1) ! d(tau_xx)/dx
+    div_tau_x1(:,:,:) = div_tau_x1(:,:,:) + les_b1(:,:,:) !div_tau_x = div_tau_x + d(tau_xx)/dx
+    les_a1(:,:,:) = - k_sgs2(:,:,:) * (      e_svm_x2(:,:,:) * e_svm_y2(:,:,:))   ! tau_xy = -K(e_x*e_y)
+    call derx(les_b1, les_a1 ,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0) ! d(tau_xy)/dx
+    div_tau_y1(:,:,:) = div_tau_y1(:,:,:) + les_b1(:,:,:) !div_tau_y = div_tau_y + d(tau_xy)/dx
+    les_a1(:,:,:) = - k_sgs2(:,:,:) * (      e_svm_x2(:,:,:) * e_svm_z2(:,:,:))   ! tau_xz = -K(e_x*e_z)
     call derx(les_b1, les_a1 ,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0) ! d(tau_xz)/dx
     div_tau_z1(:,:,:) = div_tau_z1(:,:,:) + les_b1(:,:,:) !div_tau_z = div_tau_z + d(tau_xz)/dx
 endif
