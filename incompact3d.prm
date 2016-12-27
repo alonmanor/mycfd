@@ -43,6 +43,6 @@
 #
 # explicit LES parameters
 #
-1          # SGS model (0: No LES, 1: Smagorinsky, 2: sigma)
+4          # SGS model (0: No LES, 1: Smagorinsky, 2: sigma, 4: SVM using S_ij, 5: SVM using vorticity)
 #
 

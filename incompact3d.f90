@@ -142,7 +142,11 @@ do itime=ifirst,ilast
 		   xnu_sgs1,xnu_sgs2,xnu_sgs3,les_a1,les_a2,les_a3,les_b1,les_b2,&
            div_tau_x1,div_tau_y1,div_tau_z1,&
            div_tau_x2,div_tau_y2,div_tau_z2,&
-           div_tau_x3,div_tau_y3,div_tau_z3)
+           div_tau_x3,div_tau_y3,div_tau_z3,&
+           k_sgs1    ,k_sgs2   ,k_sgs3,&
+		   e_svm_x1  ,e_svm_y1  ,e_svm_z1,&
+		   e_svm_x2  ,e_svm_y2  ,e_svm_z2,&
+		   e_svm_x3  ,e_svm_y3  ,e_svm_z3 )
  
       if (iscalar==1) then
 		if (iles > 0) then

@@ -41,7 +41,11 @@ subroutine convdiff(ux1,uy1,uz1,ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1,&
      xnu_sgs1,xnu_sgs2,xnu_sgs3,les_a1,les_a2,les_a3,les_b1,les_b2,&
      div_tau_x1,div_tau_y1,div_tau_z1,&
      div_tau_x2,div_tau_y2,div_tau_z2,&
-     div_tau_x3,div_tau_y3,div_tau_z3)
+     div_tau_x3,div_tau_y3,div_tau_z3,&
+     k_sgs1    ,k_sgs2   ,k_sgs3,&
+     e_svm_x1  ,e_svm_y1  ,e_svm_z1,&
+     e_svm_x2  ,e_svm_y2  ,e_svm_z2,&
+     e_svm_x3  ,e_svm_y3  ,e_svm_z3 )
 ! 
 !********************************************************************
 USE param
@@ -68,7 +72,9 @@ real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: duxdx3,duydx3,duzdx3,les_a
 real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: duxdy3,duydy3,duzdy3
 real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: duxdz3,duydz3,duzdz3
 real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: div_tau_x3,div_tau_y3,div_tau_z3,xnu_sgs3
-
+real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: k_sgs1,e_svm_x1,e_svm_y1,e_svm_z1
+real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: k_sgs2,e_svm_x2,e_svm_y2,e_svm_z2
+real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: k_sgs3,e_svm_x3,e_svm_y3,e_svm_z3
 
 integer :: ijk,nvect1,nvect2,nvect3,i,j,k
 real(mytype) :: x,y,z
@@ -258,11 +264,11 @@ if ((iles.eq.4).or.(iles.eq.5)) then
 	call transpose_y_to_z(e_svm_y2,e_svm_y1)
 	call transpose_y_to_z(e_svm_z2,e_svm_z1)
 	!partial SGS TKE in k_sgs1
-	k_sgs_circular(ux1,uy1,uz1,k_sgs1,xsize(1),&
+	call k_sgs_circular(ux1,uy1,uz1,k_sgs1,xsize(1),&
 				xsize(2),xsize(3),e_svm_y1,1)
 	call transpose_x_to_y(k_sgs1,k_sgs2)
 	call transpose_y_to_z(k_sgs2,k_sgs3)
-	k_sgs_circular(ux3,uy3,uz3,k_sgs3,zsize(1),&
+	call k_sgs_circular(ux3,uy3,uz3,k_sgs3,zsize(1),&
 				zsize(2),zsize(3),e_svm_y3,3)
 	!full SGS TKE in k_sgs3
 endif
