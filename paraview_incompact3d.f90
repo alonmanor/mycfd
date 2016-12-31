@@ -6,7 +6,7 @@ program visu_paraview
   real(4) :: xlx,yly,zlz,dt,dx,dy,dz
   integer(4) :: nfiles, icrfile, file1, filen, ifile, dig1, dig2, dig3, dig4
   real(4), allocatable :: yp(:),y1(:),y3(:)
-  integer(4) :: i, j, k, num, aig, ii, nfil,istret,nclx, ncly, nclz,iscalar
+  integer(4) :: i, j, k, num, aig, ii, nfil,istret,nclx, ncly, nclz,iscalar,iles
 
 !IF THE DATA ARE STORED WITH 3 DIGITS, IE UX001,UX002,ETC.
   character(3) :: chits
@@ -25,6 +25,7 @@ read(101,*) ncly
 read(101,*) nclz
 read(101,*) istret
 read(101,*) iscalar
+read(101,*) iles
 
 
   write (*,*) 'nx, ny, nz   - Incompact3D'
@@ -180,7 +181,24 @@ read(101,*) iscalar
 		write(nfil,*)'               </DataItem>'
 		write(nfil,*)'            </Attribute>'
 	endif
-
+	if ((iles.eq.4).or.(iles.eq.5)) then
+		write(nfil,*)'            <Attribute Name="tke_sgs" Center="Node">'
+		write(nfil,*)'               <DataItem Format="Binary" '
+		write(nfil,*)'                DataType="Float" Precision="8" Endian="little"'
+		write(nfil,*)'                Dimensions="',nz,ny,nx,'">'
+		write(nfil,*)'                  tke_sgs'//chits
+		write(nfil,*)'               </DataItem>'
+		write(nfil,*)'            </Attribute>'
+	endif
+	if ((iles.eq.1).or.(iles.eq.2)) then
+		write(nfil,*)'            <Attribute Name="nu_sgs" Center="Node">'
+		write(nfil,*)'               <DataItem Format="Binary" '
+		write(nfil,*)'                DataType="Float" Precision="8" Endian="little"'
+		write(nfil,*)'                Dimensions="',nz,ny,nx,'">'
+		write(nfil,*)'                  nu_sgs'//chits
+		write(nfil,*)'               </DataItem>'
+		write(nfil,*)'            </Attribute>'
+	endif
      write(nfil,*)'        </Grid>'
 
   enddo

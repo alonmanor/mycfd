@@ -41,6 +41,8 @@ def create_paraview_parameters_file():
                 fp.write(l[:l.find('#')].strip()+'\n')
             if '#iscalar' in l:
                 fp.write(l[:l.find('#')].strip()+'\n')
+            if '# SGS model' in l:
+                fp.write(l[:l.find('#')].strip()+'\n')
 
                 
                     

@@ -149,11 +149,21 @@ do itime=ifirst,ilast
 		   e_svm_x3  ,e_svm_y3  ,e_svm_z3 )
  
       if (iscalar==1) then
-		if (iles > 0) then
-		 call scalar_les(ux1,uy1,uz1,phi1,phis1,phiss1,di1,tg1,th1,ti1,td1,&
-              uy2,uz2,phi2,di2,ta2,tb2,tc2,td2,uz3,phi3,di3,ta3,tb3,ep1,&
-			  xnu_sgs1,xnu_sgs2,xnu_sgs3,tau_phi_x1,tau_phi_y2,tau_phi_z3) 
-		else
+		if (iles > 0) then ! LES
+			if ((iles.eq.1).or.(iles.eq.2)) then !eddy viscousity scalar dynamics
+			call scalar_les_eddy_visc(ux1,uy1,uz1,phi1,phis1,phiss1,di1,tg1,th1,ti1,td1,&
+				  uy2,uz2,phi2,di2,ta2,tb2,tc2,td2,uz3,phi3,di3,ta3,tb3,ep1,&
+				  xnu_sgs1,xnu_sgs2,xnu_sgs3,tau_phi_x1,tau_phi_y2,tau_phi_z3) 
+			endif
+			if ((iles.eq.4).or.(iles.eq.5)) then !SVM scalar dynamics
+			call scalar_les_svm(ux1,uy1,uz1,phi1,phis1,phiss1,di1,tg1,th1,ti1,td1,&
+				  uy2,uz2,phi2,di2,ta2,tb2,tc2,td2,uz3,phi3,di3,ta3,tb3,ep1,&
+				  k_sgs1    ,k_sgs2   ,k_sgs3,&
+				  e_svm_x1  ,e_svm_y1  ,e_svm_z1,&
+				  e_svm_x2  ,e_svm_y2  ,e_svm_z2,&
+				  e_svm_x3  ,e_svm_y3  ,e_svm_z3) 
+			endif
+		else ! DNS
          call scalar(ux1,uy1,uz1,phi1,phis1,phiss1,di1,tg1,th1,ti1,td1,&
               uy2,uz2,phi2,di2,ta2,tb2,tc2,td2,uz3,phi3,di3,ta3,tb3,ep1) 
           endif
