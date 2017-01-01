@@ -270,6 +270,10 @@ if ((iles.eq.4).or.(iles.eq.5)) then
 	call transpose_y_to_z(k_sgs2,k_sgs3)
 	call k_sgs_circular(ux3,uy3,uz3,k_sgs3,zsize(1),&
 				zsize(2),zsize(3),e_svm_y3,3)
+	do ijk=1,nvect3
+!~       k_sgs3(ijk,1,1) = 0.1*(ux3(ijk,1,1)**2.0+uy3(ijk,1,1)**2.0+&
+!~ 						uz3(ijk,1,1)**2.0)
+	enddo
 	!full SGS TKE in k_sgs3
 endif
 
@@ -311,9 +315,14 @@ if (iles > 0) then
 	call transpose_z_to_y(div_tau_x3,div_tau_x2)
     call transpose_z_to_y(div_tau_y3,div_tau_y2)
     call transpose_z_to_y(div_tau_z3,div_tau_z2)
-    call transpose_z_to_y(xnu_sgs3,xnu_sgs2)
-    call transpose_z_to_y(duydz3,duydz2)
-    call transpose_z_to_y(duxdz3,duxdz2)
+    if ((iles.eq.4).or.(iles.eq.5)) then
+		call transpose_z_to_y(k_sgs3,k_sgs2)
+    endif
+    if ((iles.eq.1).or.(iles.eq.2)) then
+		call transpose_z_to_y(xnu_sgs3,xnu_sgs2)
+		call transpose_z_to_y(duydz3,duydz2)
+		call transpose_z_to_y(duxdz3,duxdz2)
+    endif
 endif
 
 tg2(:,:,:)=td2(:,:,:)
@@ -403,9 +412,14 @@ if (iles > 0) then
     call transpose_y_to_x(div_tau_x2,div_tau_x1)
     call transpose_y_to_x(div_tau_y2,div_tau_y1)
     call transpose_y_to_x(div_tau_z2,div_tau_z1)
-    call transpose_y_to_x(xnu_sgs2,xnu_sgs1)
-    call transpose_y_to_x(duxdy2,duxdy1)
-    call transpose_y_to_x(duxdz2,duxdz1)
+    if ((iles.eq.4).or.(iles.eq.5)) then
+		call transpose_y_to_x(k_sgs2,k_sgs1)
+    endif
+    if ((iles.eq.1).or.(iles.eq.2)) then
+		call transpose_y_to_x(xnu_sgs2,xnu_sgs1)
+		call transpose_y_to_x(duxdy2,duxdy1)
+		call transpose_y_to_x(duxdz2,duxdz1)
+    endif
 endif
 
 tg1(:,:,:)=td1(:,:,:)
@@ -439,13 +453,13 @@ if ((iles.eq.1).or.(iles.eq.2)) then
     div_tau_z1(:,:,:) = div_tau_z1(:,:,:) + les_b1(:,:,:) !div_tau_z = div_tau_z + d(tau_xz)/dx
 endif
 if ((iles.eq.4).or.(iles.eq.5)) then
-    les_a1(:,:,:) =   k_sgs2(:,:,:) * (1.0 - e_svm_y2(:,:,:) * e_svm_y2(:,:,:))   ! tau_xx = K(1-e_x*e_x)
+    les_a1(:,:,:) =   k_sgs1(:,:,:) * (1.0 - e_svm_y1(:,:,:) * e_svm_y1(:,:,:))   ! tau_xx = K(1-e_x*e_x)
     call derx(les_b1, les_a1 ,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1) ! d(tau_xx)/dx
     div_tau_x1(:,:,:) = div_tau_x1(:,:,:) + les_b1(:,:,:) !div_tau_x = div_tau_x + d(tau_xx)/dx
-    les_a1(:,:,:) = - k_sgs2(:,:,:) * (      e_svm_x2(:,:,:) * e_svm_y2(:,:,:))   ! tau_xy = -K(e_x*e_y)
+    les_a1(:,:,:) = - k_sgs1(:,:,:) * (      e_svm_x1(:,:,:) * e_svm_y1(:,:,:))   ! tau_xy = -K(e_x*e_y)
     call derx(les_b1, les_a1 ,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0) ! d(tau_xy)/dx
     div_tau_y1(:,:,:) = div_tau_y1(:,:,:) + les_b1(:,:,:) !div_tau_y = div_tau_y + d(tau_xy)/dx
-    les_a1(:,:,:) = - k_sgs2(:,:,:) * (      e_svm_x2(:,:,:) * e_svm_z2(:,:,:))   ! tau_xz = -K(e_x*e_z)
+    les_a1(:,:,:) = - k_sgs1(:,:,:) * (      e_svm_x1(:,:,:) * e_svm_z1(:,:,:))   ! tau_xz = -K(e_x*e_z)
     call derx(les_b1, les_a1 ,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0) ! d(tau_xz)/dx
     div_tau_z1(:,:,:) = div_tau_z1(:,:,:) + les_b1(:,:,:) !div_tau_z = div_tau_z + d(tau_xz)/dx
 endif
@@ -454,7 +468,7 @@ endif
 ta1(:,:,:)=xnu*ta1(:,:,:)-tg1(:,:,:)
 tb1(:,:,:)=xnu*tb1(:,:,:)-th1(:,:,:)
 tc1(:,:,:)=xnu*tc1(:,:,:)-ti1(:,:,:)
-if ((iles.eq.1).or.(iles.eq.2)) then
+if (iles > 0) then
 	ta1(:,:,:)=-div_tau_x1(:,:,:) + ta1(:,:,:)
     tb1(:,:,:)=-div_tau_y1(:,:,:) + tb1(:,:,:)
     tc1(:,:,:)=-div_tau_z1(:,:,:) + tc1(:,:,:)

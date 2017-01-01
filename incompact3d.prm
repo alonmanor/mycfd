@@ -31,7 +31,7 @@
 #
 0           #ilit     # Read initial flow field ?
 500            #isave    # Frequency for writing backup file  
-100          #imodulo  # Frequency for visualization for VISU_INSTA
+1          #imodulo  # Frequency for visualization for VISU_INSTA
 #
 # INCOMPACT 3D Body  old school
 #
@@ -43,6 +43,6 @@
 #
 # explicit LES parameters
 #
-4          # SGS model (0: No LES, 1: Smagorinsky, 2: sigma, 4: SVM using S_ij, 5: SVM using vorticity)
+5          # SGS model (0: No LES, 1: Smagorinsky, 2: sigma, 4: SVM using S_ij, 5: SVM using vorticity)
 #
 

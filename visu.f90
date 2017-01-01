@@ -34,7 +34,8 @@
 !
 subroutine VISU_INSTA (ux1,uy1,uz1,phi1,ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1,&
      ta2,tb2,tc2,td2,te2,tf2,tg2,th2,ti2,tj2,di2,&
-     ta3,tb3,tc3,td3,te3,tf3,tg3,th3,ti3,di3,phG,uvisu,k_sgs1,xnu_sgs1)
+     ta3,tb3,tc3,td3,te3,tf3,tg3,th3,ti3,di3,phG,uvisu,k_sgs1,xnu_sgs1,&
+     evec_x1,evec_y1,evec_z1)
 !
 !############################################################################
 
@@ -46,8 +47,8 @@ USE decomp_2d_io
 implicit none
 
 TYPE(DECOMP_INFO) :: phG
-real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1,phi1,k_sgs1,xnu_sgs1
-real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
+real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1,phi1,k_sgs1,xnu_sgs1,evec_x1
+real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1,evec_y1,evec_z1
 real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2,tb2,tc2,td2,te2,tf2,tg2,th2,ti2,tj2,di2
 real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: ta3,tb3,tc3,td3,te3,tf3,tg3,th3,ti3,di3
 real(mytype),dimension(xszV(1),xszV(2),xszV(3)) :: uvisu 
@@ -163,6 +164,21 @@ if ((iles.eq.4).or.(iles.eq.5)) then
 	call fine_to_coarseV(1,k_sgs1,uvisu)
 998 format('tke_sgs',I3.3)
 	   write(filename, 998) itime/imodulo
+	   call decomp_2d_write_one(1,uvisu,filename,2)
+	uvisu=0.
+	call fine_to_coarseV(1,evec_x1,uvisu)
+999 format('evec_x',I3.3)
+	   write(filename, 999) itime/imodulo
+	   call decomp_2d_write_one(1,uvisu,filename,2)
+	uvisu=0.
+	call fine_to_coarseV(1,evec_y1,uvisu)
+1000 format('evec_y',I3.3)
+	   write(filename, 1000) itime/imodulo
+	   call decomp_2d_write_one(1,uvisu,filename,2)
+	uvisu=0.
+	call fine_to_coarseV(1,evec_z1,uvisu)
+1001 format('evec_z',I3.3)
+	   write(filename, 1001) itime/imodulo
 	   call decomp_2d_write_one(1,uvisu,filename,2)
 endif
 
