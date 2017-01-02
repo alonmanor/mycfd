@@ -474,7 +474,7 @@ if (iles > 0) then
     tc1(:,:,:)=-div_tau_z1(:,:,:) + tc1(:,:,:)
 endif
 if (itype.eq.10) then
-    ta1(:,:,:)=ta1(:,:,:)+0.1
+    ta1(:,:,:)=ta1(:,:,:)+dpdx_drive
 endif
 
 

@@ -498,13 +498,14 @@ if (iin.eq.1) then !generation of a random noise
    do j=1,xsize(2)
    do i=1,xsize(1)
       ux1(i,j,k)=noise*ux1(i,j,k)
-      if (itype.ne.10) then
-			uy1(i,j,k)=noise*uy1(i,j,k)
-	  else !boundary layer flow- avoid vertical perturbation
-			uy1(i,j,k)=noise*uy1(i,j,k)*0.0
-			ux1(i,j,k)=ux1(i,j,k)+1.0
-	  endif
       uz1(i,j,k)=noise*uz1(i,j,k)
+      uy1(i,j,k)=noise*uy1(i,j,k)
+      if (itype.eq.10) then !boundary layer flow with free slip at the top- avoid vertical perturbation
+			uy1(i,j,k)= 0.0
+	  endif
+	  if (itype.eq.11) then
+			ux1(i,j,k)=ux1(i,j,k) + u_geos
+	  endif
    enddo
    enddo
    enddo
@@ -523,8 +524,8 @@ if (iin.eq.1) then !generation of a random noise
    enddo
    enddo
 
-   if (iscalar==1) then
-   if (itype.ne.10) then
+if (iscalar==1) then
+   if (itype.lt.10) then
       do k=1,xsize(3)
       do j=1,xsize(2)
       do i=1,xsize(1)
@@ -538,15 +539,11 @@ if (iin.eq.1) then !generation of a random noise
       enddo
       enddo
       enddo
-      else !boundary layer (itype.eq.10)
+    else !boundary layer (itype.eq.10 or itype.eq.11) zero initial scalar
       do k=1,xsize(3)
       do j=1,xsize(2)
       do i=1,xsize(1)
-!~          if ((j+xstart(2)-1).eq.1) then
-!~             phi1(i,j,k)=1.
-!~          else
-            phi1(i,j,k)=0.
-!~          endif
+         phi1(i,j,k)=0.
          phis1(i,j,k)=phi1(i,j,k)
          phiss1(i,j,k)=phis1(i,j,k)
       enddo
@@ -600,6 +597,13 @@ if (iles > 0) then !initialize the deltabar array
 	enddo
 	Csmag = 0.16; Csigma = 1.35
 endif
+
+!~ if (damp.gt.0.0) then
+!~ 	f_damp = 0.0
+!~ 	do j=1,ny
+!~ 		
+!~ 	enddo
+!~ endif
 
 return
 end subroutine init
@@ -1070,7 +1074,7 @@ endif
 !****************************************************
 !WE ARE IN X PENCIL!!!!!!
 if (ncly==2) then
-   if (itype.eq.2) then
+   if ((itype.eq.2).or.(itype.eq.11)) then
 
    ! determine the processor grid in use
    call MPI_CART_GET(DECOMP_2D_COMM_CART_X, 2, &
@@ -1123,6 +1127,9 @@ if (ncly==2) then
          ux(i,xsize(2),k)=0.+dpdxyn(i,k)
          uy(i,xsize(2),k)=0.
          uz(i,xsize(2),k)=0.+dpdzyn(i,k)
+         if (itype.eq.11) then
+			ux(i,xsize(2),k)=ux(i,xsize(2),k) + u_geos
+         endif
       enddo
       enddo
    else
@@ -1143,6 +1150,9 @@ if (ncly==2) then
             ux(i,xsize(2),k)=0.+dpdxyn(i,k)
             uy(i,xsize(2),k)=0.
             uz(i,xsize(2),k)=0.+dpdzyn(i,k)
+            if (itype.eq.11) then
+				ux(i,xsize(2),k)=ux(i,xsize(2),k) + u_geos
+			endif
          enddo
          enddo
       endif
@@ -1151,9 +1161,9 @@ if (ncly==2) then
    endif
 endif
 !****************************************************
-!ipbl == 1  -  no slip at the bottom, free slip at the top
+!itype.eq.10  -  no slip at the bottom, free slip at the top
 !****************************************************
-if (ipbl.eq.1) then
+if (itype.eq.10) then
    ! determine the processor grid in use
    call MPI_CART_GET(DECOMP_2D_COMM_CART_X, 2, &
          dims, dummy_periods, dummy_coords, code)
@@ -1168,12 +1178,12 @@ if (ipbl.eq.1) then
          dpdzy1(i,k)=dpdzy1(i,k)*gdt(itr)
       enddo
       enddo
-!~       do k=1,xsize(3)
-!~       do i=1,xsize(1)
-!~          dpdxyn(i,k)=dpdxyn(i,k)*gdt(itr)
-!~          dpdzyn(i,k)=dpdzyn(i,k)*gdt(itr)
-!~       enddo
-!~       enddo
+      do k=1,xsize(3)
+      do i=1,xsize(1)
+         dpdxyn(i,k)=dpdxyn(i,k)*gdt(itr)
+         dpdzyn(i,k)=dpdzyn(i,k)*gdt(itr)
+      enddo
+      enddo
    else
       if (xstart(2)==1) then
          do k=1,xsize(3)
@@ -1183,14 +1193,14 @@ if (ipbl.eq.1) then
          enddo
          enddo
       endif
-!~       if (ny-(nym/dims(1))==xstart(2)) then
-!~          do k=1,xsize(3)
-!~          do i=1,xsize(1)
-!~             dpdxyn(i,k)=dpdxyn(i,k)*gdt(itr)
-!~             dpdzyn(i,k)=dpdzyn(i,k)*gdt(itr)
-!~          enddo
-!~          enddo
-!~       endif
+      if (ny-(nym/dims(1))==xstart(2)) then
+         do k=1,xsize(3)
+         do i=1,xsize(1)
+            dpdxyn(i,k)=dpdxyn(i,k)*gdt(itr)
+            dpdzyn(i,k)=dpdzyn(i,k)*gdt(itr)
+         enddo
+         enddo
+      endif
    endif
 
 
@@ -1204,9 +1214,7 @@ if (ipbl.eq.1) then
       enddo
       do k=1,xsize(3)
       do i=1,xsize(1)
-!~          ux(i,xsize(2),k)=0.+dpdxyn(i,k)
          uy(i,xsize(2),k)=0.
-!~          uz(i,xsize(2),k)=0.+dpdzyn(i,k)
       enddo
       enddo
    else
@@ -1225,9 +1233,7 @@ if (ipbl.eq.1) then
        if (ny-(nym/dims(1))==xstart(2)) then  !upper boundary- free slip
          do k=1,xsize(3)
          do i=1,xsize(1)
-!~             ux(i,xsize(2),k)=0.+dpdxyn(i,k)
             uy(i,xsize(2),k)=0.
-!~             uz(i,xsize(2),k)=0.+dpdzyn(i,k)
          enddo
          enddo
       endif

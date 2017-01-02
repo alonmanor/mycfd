@@ -15,9 +15,9 @@
 # INCOMPACT3D Flow configuration
 #
 0      #nclx   # nclx (BC)
-1      #ncly   # ncly (BC) 
+2      #ncly   # ncly (BC) 
 0      #nclz   # nclz (BC)
-10      #itype  # Type of flow  
+11      #itype  # Type of flow  
 1      #iin    # Inflow condition (1: classic, 2: turbinit)
 1      #ifirst # First iteration   
 30000      #ilast  # Last iteration 
@@ -30,8 +30,8 @@
 # INCOMPACT 3D File parameters 
 #
 0           #ilit     # Read initial flow field ?
-500            #isave    # Frequency for writing backup file  
-1          #imodulo  # Frequency for visualization for VISU_INSTA
+200            #isave    # Frequency for writing backup file  
+10          #imodulo  # Frequency for visualization for VISU_INSTA
 #
 # INCOMPACT 3D Body  old school
 #
@@ -43,6 +43,11 @@
 #
 # explicit LES parameters
 #
-5          # SGS model (0: No LES, 1: Smagorinsky, 2: sigma, 4: SVM using S_ij, 5: SVM using vorticity)
+0          # SGS model (0: No LES, 1: Smagorinsky, 2: sigma, 4: SVM using S_ij, 5: SVM using vorticity)
+#
+# boundary layer options
+#
+4.0        # ug
+0.0        # dpdx
 #
 

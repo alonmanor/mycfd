@@ -252,7 +252,7 @@ if (ncly==1) then
          ty(i,1,k)=0. 
          ty(i,2,k)=afjy*(uy(i,3,k)-uy(i,1,k))&
               +bfjy*(uy(i,4,k)-uy(i,2,k)) 
-          if (ipbl.eq.1) then
+          if (itype.eq.10) then
 			ty(i,1,k)=af1y*uy(i,1,k)+bf1y*uy(i,2,k)&
 			+cf1y*uy(i,3,k) 
 			ty(i,2,k)=af2y*(uy(i,3,k)-uy(i,1,k)) 
@@ -301,7 +301,7 @@ if (ncly==1) then
               +bfjy*(uy(i,3,k)+uy(i,3,k)) 
          ty(i,2,k)=afjy*(uy(i,3,k)-uy(i,1,k))&
               +bfjy*(uy(i,4,k)+uy(i,2,k)) 
-         if (ipbl.eq.1) then
+         if (itype.eq.10) then
 			ty(i,1,k)=af1y*uy(i,1,k)+bf1y*uy(i,2,k)&
 			+cf1y*uy(i,3,k) 
 			ty(i,2,k)=af2y*(uy(i,3,k)-uy(i,1,k)) 
@@ -998,7 +998,7 @@ if (ncly==1) then
               -uy(i,3,k)+uy(i,1,k))&
               +csjy*(uy(i,6,k)-uy(i,3,k)&
               -uy(i,3,k)+uy(i,2,k))
-          if (ipbl.eq.1) then
+          if (itype.eq.10) then
           ty(i,1,k)=as1y*uy(i,1,k)+bs1y*uy(i,2,k)&
            +cs1y*uy(i,3,k)+ds1y*uy(i,4,k)
 		  ty(i,2,k)=as2y*(uy(i,3,k)-uy(i,2,k)&
@@ -1080,7 +1080,7 @@ if (ncly==1) then
               -uy(i,3,k)+uy(i,1,k))&
               +csjy*(uy(i,6,k)-uy(i,3,k)&
               -uy(i,3,k)-uy(i,2,k))
-         if (ipbl.eq.1) then
+         if (itype.eq.10) then
           ty(i,1,k)=as1y*uy(i,1,k)+bs1y*uy(i,2,k)&
            +cs1y*uy(i,3,k)+ds1y*uy(i,4,k)
 		  ty(i,2,k)=as2y*(uy(i,3,k)-uy(i,2,k)&

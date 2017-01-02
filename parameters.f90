@@ -105,9 +105,10 @@ read (10,1000) a
 read (10,1000) a
 read (10,*) iles
 read (10,1000) a
-!read (10,1000) a
-!read (10,*) ipbl
-!read (10,1000) a
+read (10,1000) a
+read (10,1000) a
+read (10,*) u_geos
+read (10,*) dpdx_drive
 close(10) 
 if (nrank==0) then
 print *,'==========================================================='
@@ -155,6 +156,9 @@ endif
 if (ivirt.eq.2) then
    print *,'Immersed boundary : on with Lagrangian Poly'
 endif
+if (itype.eq.10) then
+   write(*,1116) u_geos,dpdx_drive
+endif
 if (iles<1) then
 	print *,'No explicit LES'
 else
@@ -170,6 +174,7 @@ endif
 
 
 
+
  1101 format(' Spatial Resolution: (nx,ny,nz)=(',I4,',',I4,',',I4,')')
  1102 format(' Boundary condition: (nclx,ncly,nclz)=(',I1,',',I1,',',I1,')')
  1103 format(' Domain dimension  : (lx,ly,lz)=(',F6.1,',',F6.1,',',F6.1,')')
@@ -179,13 +184,15 @@ endif
  1107 format(' Object centred at : (',F6.2,',',F6.2,',',F6.2,')')
  1110 format(' Object length     : ',F6.2)
  1113 format(' Schmidt number    : ',F6.2)
+ 1116 format(' U_geostroph.     : ',F6.2,' ; Driving Pres. grad.: ',F6.2)
 endif
-if (itype.eq.10) then
-	ipbl = 1
-	if (ncly.ne.1) then
-		print *, "Consistancy error- for itype==10 (PBL FLOW) set ncly==1 "
-		stop 
-	endif
+if ((itype.eq.10).and.(ncly.ne.1)) then
+	print *, "Consistancy error- for itype==10 (pressure driven PBL flow) set ncly==1 "
+	stop 
+endif
+if ((itype.eq.11).and.(ncly.ne.2)) then
+	print *, "Consistancy error- for itype==11 (geostroph. driven PBL flow) set ncly==2 "
+	stop 
 endif
 
 xnu=1./re 

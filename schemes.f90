@@ -624,8 +624,8 @@ if (ncly.eq.1) then
       fcy(j)=1.
       fby(j)=alfajy
    enddo
-   ! for ipbl option, no-slip at the bottom 
-   if (ipbl.eq.1) then
+   ! for itype.eq.10 option, no-slip at the bottom 
+   if (itype.eq.10) then
 	   ffy(1)   =alfa1y
 	   ffy(2)   =alfa2y
 	   fby(1)   =alfa2y 
@@ -846,8 +846,8 @@ if (ncly.eq.1) then
       scy(j)=1.
       sby(j)=alsajy
    enddo
-! for ipbl option, no-slip at the bottom 
-   if (ipbl.eq.1) then
+! for itype.eq.10 option, no-slip at the bottom 
+   if (itype.eq.10) then
 	   sfy(1)   =alsa1y
 	   sfy(2)   =alsa2y
        sfy(3)   =alsa3y
@@ -1008,7 +1008,7 @@ if (nclx.eq.1) then
    sfx (1)=0.
 endif
 if (ncly.eq.1) then
-	if (ipbl.ne.1) then
+	if (itype.ne.10) then
 		ffyp(1)=0.
 		sfy (1)=0.
    endif
