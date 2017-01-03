@@ -117,4 +117,49 @@ subroutine nanhunt(A,nx,ny,nz)
 	enddo
 end subroutine nanhunt
 
+! show print the element with the absolute index i,j,k. Xpencils
+subroutine showval1(a, i, j, k)
+	USE decomp_2d
+	real(mytype),dimension(xstart(1):xend(1),xstart(2):xend(2),&
+						xstart(3):xend(3)) :: a
+	integer i,j,k
+	if ( (i.ge.xstart(1)).and.(i.le.xend(1)) ) then
+		if ( (j.ge.xstart(2)).and.(j.le.xend(2)) ) then
+			if ( (k.ge.xstart(3)).and.(k.le.xend(3)) ) then
+				print *,a(i,j,k)
+			endif
+		endif
+	endif
+end subroutine showval1
+
+! show print the element with the absolute index i,j,k. Ypencils
+subroutine showval2(a, i, j, k)
+	USE decomp_2d
+	real(mytype),dimension(ystart(1):yend(1),ystart(2):yend(2),&
+						ystart(3):yend(3)) :: a
+	integer i,j,k
+	if ( (i.ge.ystart(1)).and.(i.le.yend(1)) ) then
+		if ( (j.ge.ystart(2)).and.(j.le.yend(2)) ) then
+			if ( (k.ge.ystart(3)).and.(k.le.yend(3)) ) then
+				print *,a(i,j,k)
+			endif
+		endif
+	endif
+end subroutine showval2
+
+! show print the element with the absolute index i,j,k. Zpencils
+subroutine showval3(a, i, j, k)
+	USE decomp_2d
+	real(mytype),dimension(zstart(1):zend(1),zstart(2):zend(2),&
+						zstart(3):zend(3)) :: a
+	integer i,j,k
+	if ( (i.ge.zstart(1)).and.(i.le.zend(1)) ) then
+		if ( (j.ge.zstart(2)).and.(j.le.zend(2)) ) then
+			if ( (k.ge.zstart(3)).and.(k.le.zend(3)) ) then
+				print *,a(i,j,k)
+			endif
+		endif
+	endif
+end subroutine showval3
+
 end module mymath

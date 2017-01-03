@@ -292,7 +292,7 @@ vphase=0.5*(uxmax1+uxmin1)
 cx=vphase*gdt(itr)*udx
 
 
-if (itype.ne.9) then
+if (itype.lt.9) then
    do k=1,xsize(3)
    do j=1,xsize(2)
       bxxn(j,k)=ux(nx,j,k)-cx*(ux(nx,j,k)-ux(nx-1,j,k))
@@ -301,13 +301,11 @@ if (itype.ne.9) then
    enddo
    enddo
    if (iscalar==1) then
-	  if (itype.ne.10) then
-		  do k=1,xsize(3)
+	  	  do k=1,xsize(3)
 		  do j=1,xsize(2)
 			 phi(nx,j,k)=phi(nx,j,k)-cx*(phi(nx,j,k)-phi(nx-1,j,k))
 		  enddo
 		  enddo
-      endif
    endif
 else
 print *,'NOT READY'
@@ -474,7 +472,7 @@ real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1,phi1,ep1
 real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: gx1,gy1,gz1,phis1
 real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: hx1,hy1,hz1,phiss1
 
-real(mytype) :: y,r,um,r1,r2,r3
+real(mytype) :: y,r,um,r1,r2,r3,ym,phi_val
 integer :: k,j,i,fh,ierror,ii
 integer :: code
 integer (kind=MPI_OFFSET_KIND) :: disp
@@ -504,7 +502,8 @@ if (iin.eq.1) then !generation of a random noise
 			uy1(i,j,k)= 0.0
 	  endif
 	  if (itype.eq.11) then
-			ux1(i,j,k)=ux1(i,j,k) + u_geos
+!~ 			ux1(i,j,k)=ux1(i,j,k) + u_geos
+			ux1(i,j,k)=u_geos
 	  endif
    enddo
    enddo
@@ -523,34 +522,48 @@ if (iin.eq.1) then !generation of a random noise
       enddo
    enddo
    enddo
-
-if (iscalar==1) then
-   if (itype.lt.10) then
-      do k=1,xsize(3)
-      do j=1,xsize(2)
-      do i=1,xsize(1)
-         if ((j+xstart(2)-1).ge.nym) then
-            phi1(i,j,k)=1.
-         else
-            phi1(i,j,k)=0.
-         endif
-         phis1(i,j,k)=phi1(i,j,k)
-         phiss1(i,j,k)=phis1(i,j,k)
-      enddo
-      enddo
-      enddo
-    else !boundary layer (itype.eq.10 or itype.eq.11) zero initial scalar
-      do k=1,xsize(3)
-      do j=1,xsize(2)
-      do i=1,xsize(1)
-         phi1(i,j,k)=0.
-         phis1(i,j,k)=phi1(i,j,k)
-         phiss1(i,j,k)=phis1(i,j,k)
-      enddo
-      enddo
-      enddo
-      endif
-   endif
+	if (iscalar==1) then
+	   if (itype.lt.10) then
+		  do k=1,xsize(3)
+		  do j=1,xsize(2)
+		  do i=1,xsize(1)
+			 if ((j+xstart(2)-1).ge.nym) then
+				phi1(i,j,k)=1.
+			 else
+				phi1(i,j,k)=0.
+			 endif
+			 phis1(i,j,k)=phi1(i,j,k)
+			 phiss1(i,j,k)=phis1(i,j,k)
+		  enddo
+		  enddo
+		  enddo
+	!~     else !boundary layer (itype.eq.10 or itype.eq.11) zero initial scalar
+	!~       do k=1,xsize(3)
+	!~       do j=1,xsize(2)
+	!~       do i=1,xsize(1)
+	!~          phi1(i,j,k)=0.
+	!~          phis1(i,j,k)=phi1(i,j,k)
+	!~          phiss1(i,j,k)=phis1(i,j,k)
+	!~       enddo
+	!~       enddo
+	!~       enddo
+	!~       endif
+		
+		else!boundary layer (itype.eq.10 or itype.eq.11)  initial scalar gradient
+			do j=1,xsize(2)
+				ym = yp(j+xstart(2)-1)/yp(ny)
+				phi_val = phi_bottom + ym*(phi_top-phi_bottom)
+!~ 				if (nrank.eq.0) print *,ym,phi_val,yp(ny),yp(j+xstart(2)-1)
+				do k=1,xsize(3)
+					do i=1,xsize(1)
+						phi1(i,j,k) = phi_val
+						phis1(i,j,k)=phi1(i,j,k)
+						phiss1(i,j,k)=phis1(i,j,k)
+					enddo
+				enddo
+			enddo
+	   endif
+	endif
 endif
 
 if (iin.eq.2) then !read a correlated noise generated before
@@ -598,12 +611,19 @@ if (iles > 0) then !initialize the deltabar array
 	Csmag = 0.16; Csigma = 1.35
 endif
 
-!~ if (damp.gt.0.0) then
-!~ 	f_damp = 0.0
-!~ 	do j=1,ny
-!~ 		
-!~ 	enddo
-!~ endif
+if (damp.gt.0.0) then
+	do j=1,ny
+		f_damp(j) = 0.0
+		if (yp(j) > damp_height) then
+			f_damp(j) = damp*sin(0.5*pi*(yp(j)-damp_height)/&
+			            (yp(ny)-damp_height))**2.0
+		endif
+		if (nrank.eq.0) then
+			print *,yp(j),'f_damp=',f_damp(j)
+		endif
+	enddo
+	
+endif
 
 return
 end subroutine init
@@ -968,7 +988,7 @@ logical, dimension(2) :: dummy_periods
 if (xstart(2) == 1) then
 	do i=1,xsize(1)
 		do k=1,xsize(3)
-			phi(i,1,k) = 1.0
+			phi(i,1,k) = phi_bottom
 		enddo
 	enddo
 endif
@@ -977,7 +997,7 @@ endif
 if (xend(2) == ny) then
 	do i=1,xsize(1)
 		do k=1,xsize(3)
-			phi(i,ny,k) = 1.0
+			phi(i,ny,k) = phi_top
 		enddo
 	enddo
 endif

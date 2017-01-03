@@ -45,7 +45,7 @@ subroutine convdiff(ux1,uy1,uz1,ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1,&
      k_sgs1    ,k_sgs2   ,k_sgs3,&
      e_svm_x1  ,e_svm_y1  ,e_svm_z1,&
      e_svm_x2  ,e_svm_y2  ,e_svm_z2,&
-     e_svm_x3  ,e_svm_y3  ,e_svm_z3 )
+     e_svm_x3  ,e_svm_y3  ,e_svm_z3, phi1 )
 ! 
 !********************************************************************
 USE param
@@ -57,7 +57,7 @@ use mymath
 implicit none
 
 
-real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1
+real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1,phi1
 real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1
 real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ux2,uy2,uz2 
 real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: ta2,tb2,tc2,td2,te2,tf2,tg2,th2,ti2,tj2,di2
@@ -466,7 +466,7 @@ endif
 
 !FINAL SUM: DIFF TERMS + CONV TERMS
 ta1(:,:,:)=xnu*ta1(:,:,:)-tg1(:,:,:)
-tb1(:,:,:)=xnu*tb1(:,:,:)-th1(:,:,:)
+tb1(:,:,:)=xnu*tb1(:,:,:)-th1(:,:,:)+buoy_param*phi1(:,:,:)
 tc1(:,:,:)=xnu*tc1(:,:,:)-ti1(:,:,:)
 if (iles > 0) then
 	ta1(:,:,:)=-div_tau_x1(:,:,:) + ta1(:,:,:)
@@ -476,10 +476,45 @@ endif
 if (itype.eq.10) then
     ta1(:,:,:)=ta1(:,:,:)+dpdx_drive
 endif
+if ((itype.eq.11).and.(damp.gt.0.0)) then !damping layer
+	call damping(ta1,tb1,ux1,uy1)
+endif
 
 
 end subroutine convdiff
 
+
+!************************************************************
+!
+subroutine damping(ta1,tb1,ux1,uy1)
+!
+!************************************************************
+
+USE param
+USE variables
+USE decomp_2d
+
+implicit none
+
+real(mytype),dimension(xsize(1),xsize(2),xsize(3)),intent(inout) :: ta1,tb1
+real(mytype),dimension(xsize(1),xsize(2),xsize(3)),intent(in) :: ux1,uy1
+integer i,j,k
+real(mytype) :: ux_geos, uy_geos
+
+ux_geos = u_geos
+uy_geos = 0.0
+do i=1,xsize(1)
+	do k=1,xsize(3)
+		do j=xstart(2),xend(2)
+			ta1(i,j,k) = ta1(i,j,k) + f_damp(j)*(ux_geos - ux1(i,j,k))
+			tb1(i,j,k) = tb1(i,j,k) + f_damp(j)*(uy_geos - uy1(i,j,k))
+		enddo
+	enddo
+enddo
+
+return
+
+end subroutine damping
 
 
 !************************************************************
@@ -633,6 +668,7 @@ subroutine scalar_les_eddy_visc(ux1,uy1,uz1,phi1,phis1,phiss1,di1,ta1,tb1,tc1,td
 USE param
 USE variables
 USE decomp_2d
+use mymath
 
 implicit none
 
@@ -651,6 +687,7 @@ nvect1=xsize(1)*xsize(2)*xsize(3)
 nvect2=ysize(1)*ysize(2)*ysize(3)
 nvect3=zsize(1)*zsize(2)*zsize(3)
 
+
 !X PENCILS
 do ijk=1,nvect1
    ta1(ijk,1,1)=ux1(ijk,1,1)*phi1(ijk,1,1)
@@ -659,11 +696,12 @@ call derx (tb1,ta1,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0) !d(u*phi)/dx
 call derx (ta1,phi1,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1) !dphi/dx -> ta1
 do ijk=1,nvect1
 	!(nu_mol+nu_sgs)*(dphi/dx) -> ta1
-	ta1(ijk,1,1)=(xnu_sgs1(ijk,1,1)+xnu/sc)*ta1(ijk,1,1)  
+	ta1(ijk,1,1)=(xnu_sgs1(ijk,1,1)/prtdl+xnu/sc)*ta1(ijk,1,1)  
 enddo
 !d/dx((nu_mol+nu_sgs)*dphi/dx )-> tau_phi_x1 dissipation+SGS term
 !phi is symmetric across the boundary, so ta1 is a-symmetric
-call derx (tau_phi_x1,ta1,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0)  
+call derx (tau_phi_x1,ta1,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0)
+
 
 call transpose_x_to_y(phi1,phi2)
 call transpose_x_to_y(uy1,uy2)
@@ -677,11 +715,12 @@ call dery (tb2,ta2,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0)!d(v*phi)
 call dery (ta2,phi2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1)!dphi/dy -> ta2
 do ijk=1,nvect2
 	!(nu_mol+nu_sgs)*(dphi/dy) -> ta2
-	ta2(ijk,1,1)=(xnu_sgs2(ijk,1,1)+xnu/sc)*ta2(ijk,1,1) 
+	ta2(ijk,1,1)=(xnu_sgs2(ijk,1,1)/prtdl+xnu/sc)*ta2(ijk,1,1) 
 enddo
 !d/dy((nu_mol+nu_sgs)*dphi/dy ) -> tau_phi_y2 dissipation+SGS term
 call dery (tau_phi_y2,ta2,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0)  
 
+call showval2(tau_phi_y2, 1,2,1)
 call transpose_y_to_z(phi2,phi3)
 call transpose_y_to_z(uz2,uz3)
 
@@ -693,7 +732,7 @@ call derz (tb3,ta3,di3,sz,ffz,fsz,fwz,zsize(1),zsize(2),zsize(3),0)!d(w*phi)/dz 
 call derz (ta3,phi3,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),0)!dphi/dz -> ta2
 do ijk=1,nvect3
 	!(nu_mol+nu_sgs)*(dphi/dz) -> ta3
-	ta3(ijk,1,1)=(xnu_sgs3(ijk,1,1)+xnu/sc)*ta3(ijk,1,1) 
+	ta3(ijk,1,1)=(xnu_sgs3(ijk,1,1)/prtdl+xnu/sc)*ta3(ijk,1,1) 
 enddo
 !d/dz((nu_mol+nu_sgs)*dphi/dz ) -> tau_phi_z3 dissipation+SGS term
 call derz (tau_phi_z3,ta3,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),0)
@@ -716,11 +755,10 @@ do ijk=1,nvect1
    tau_phi_x1(ijk,1,1)=tau_phi_x1(ijk,1,1)+tc1(ijk,1,1) !diffusion + SGS term
    tb1(ijk,1,1)=tb1(ijk,1,1)+td1(ijk,1,1) !advection term
 enddo
- 
-do ijk=1,nvect1
-   ta1(ijk,1,1)=ta1(ijk,1,1)-tb1(ijk,1,1) 
-enddo
 
+do ijk=1,nvect1
+   ta1(ijk,1,1)=ta1(ijk,1,1)-tb1(ijk,1,1)+ tau_phi_x1(ijk,1,1)
+enddo
 !TIME ADVANCEMENT
 nxyz=xsize(1)*xsize(2)*xsize(3)  
 
@@ -769,9 +807,16 @@ if (nscheme==4) then
       endif
    endif
 endif
+if (itype.gt.9) then
+!clip scalar to mix-max values
+do ijk=1,nxyz
+	phi1(ijk,1,1) = max(phi1(ijk,1,1), min(phi_bottom,phi_top))
+	phi1(ijk,1,1) = min(phi1(ijk,1,1), max(phi_bottom,phi_top))
+enddo
+endif
 
 
- end subroutine scalar_les_eddy_visc
+end subroutine scalar_les_eddy_visc
 
 
 

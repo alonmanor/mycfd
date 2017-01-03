@@ -133,6 +133,10 @@ real(mytype) :: alpha,beta
 !for implicit LES
 real(mytype), dimension(ny) :: delta_bar
 real(mytype) :: Csmag,Csigma
+
+!for vertical damping
+real(mytype), dimension(ny) :: f_damp
+
 end module variables
 
 module param
@@ -146,8 +150,11 @@ use decomp_2d, only : mytype
   integer :: iscalar
   integer :: nxboite, istat,iread,iadvance_time 
   real(mytype) :: xlx,yly,zlz,dx,dy,dz,dx2,dy2,dz2
-  real(mytype) :: dt,xnu,noise,noise1,pi,twopi,u1,u2,sc,u_geos,dpdx_drive
+  real(mytype) :: dt,xnu,noise,noise1,pi,twopi,u1,u2,sc,& 
+                  u_geos,dpdx_drive,damp,damp_height,&
+                  phi_bottom,phi_top,buoy_param
   real(mytype) :: t,xxk1,xxk2
+  real(mytype) :: prtdl=0.7
   integer :: itr,itime
   character :: filesauve*80, filenoise*80, &
        nchamp*80,filepath*80, fileturb*80, filevisu*80 

@@ -109,6 +109,11 @@ read (10,1000) a
 read (10,1000) a
 read (10,*) u_geos
 read (10,*) dpdx_drive
+read (10,*) damp
+read (10,*) damp_height
+read (10,*) phi_bottom
+read (10,*) phi_top
+read (10,*) buoy_param
 close(10) 
 if (nrank==0) then
 print *,'==========================================================='

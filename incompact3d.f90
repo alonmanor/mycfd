@@ -146,7 +146,7 @@ do itime=ifirst,ilast
            k_sgs1    ,k_sgs2   ,k_sgs3,&
 		   e_svm_x1  ,e_svm_y1  ,e_svm_z1,&
 		   e_svm_x2  ,e_svm_y2  ,e_svm_z2,&
-		   e_svm_x3  ,e_svm_y3  ,e_svm_z3 )
+		   e_svm_x3  ,e_svm_y3  ,e_svm_z3, phi1 )
  
       if (iscalar==1) then
 		if (iles > 0) then ! LES

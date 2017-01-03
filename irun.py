@@ -58,6 +58,9 @@ if os.path.exists(run_dir):
     print('run already exists')
     sys.exit()
 os.mkdir(run_dir)
+if len(sys.argv) > 2:
+     init_file = sys.argv[2]
+     shutil.copy(os.path.join(wd,init_file), './'+run_name+'/sauve.dat')
 os.mkdir(os.path.join(run_dir, 'code'))
 v = glob(os.path.join(wd,'*'))
 #pdb.set_trace()
