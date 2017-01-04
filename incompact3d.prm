@@ -10,7 +10,7 @@
 1.     #u2   # u2 (min velocity) (for inflow condition) 
 0.125   #noise# Turbulence intensity (1=100%) !! Initial condition (original 0.125)
 0.0   #noise1# Turbulence intensity (1=100%) !! Inflow condition
-0.005  #dt   # Time step original 0.005
+0.01  #dt   # Time step original 0.005
 #
 # INCOMPACT3D Flow configuration
 #
@@ -22,7 +22,7 @@
 1      #ifirst # First iteration   
 20000      #ilast  # Last iteration 
 2      #nscheme# Temporal scheme (1:AB2, 2: RK3, 3:RK4, 4:AB3)
-3      #istret # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
+0      #istret # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
 0.259065151  #beta   # Refinement parameter (beta) 
 1      #iskew  # (0:urotu, 1:skew, for the convective terms)
 1      #iscalar# (0: no scalar, 1:scalar)
@@ -51,8 +51,8 @@
 0.0        # dpdx
 -1.0        # damping factor
 1.0        # damping height
-1.0	       # temperature at the bottom
+0.0	       # temperature at the bottom
 0.0        # temperature at the top
-1.0        # buoyancy parameter
+0.0        # buoyancy parameter
 #
 

@@ -72,7 +72,6 @@ if (nrank==0) then
    print *,'PHI min=',phimin1
 endif
 
-
 return
 end subroutine test_scalar_min_max
 

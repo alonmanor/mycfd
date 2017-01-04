@@ -174,7 +174,7 @@ do itime=ifirst,ilast
 
 
       call pre_correc(ux1,uy1,uz1)
-      if (iscalar==1) call scalar_sources(phi1)
+      if (iscalar==1) call scalar_sources(phi1,phis1,phiss1)
 
       if (ivirt==1) then !solid body old school
          !we are in X-pencil

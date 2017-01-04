@@ -720,7 +720,7 @@ enddo
 !d/dy((nu_mol+nu_sgs)*dphi/dy ) -> tau_phi_y2 dissipation+SGS term
 call dery (tau_phi_y2,ta2,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0)  
 
-call showval2(tau_phi_y2, 1,2,1)
+!~ call showval2(tau_phi_y2, 1,2,1)
 call transpose_y_to_z(phi2,phi3)
 call transpose_y_to_z(uz2,uz3)
 
@@ -757,8 +757,10 @@ do ijk=1,nvect1
 enddo
 
 do ijk=1,nvect1
-   ta1(ijk,1,1)=ta1(ijk,1,1)-tb1(ijk,1,1)+ tau_phi_x1(ijk,1,1)
+   ta1(ijk,1,1)=tau_phi_x1(ijk,1,1)-tb1(ijk,1,1)
 enddo
+
+
 !TIME ADVANCEMENT
 nxyz=xsize(1)*xsize(2)*xsize(3)  
 
@@ -809,10 +811,10 @@ if (nscheme==4) then
 endif
 if (itype.gt.9) then
 !clip scalar to mix-max values
-do ijk=1,nxyz
-	phi1(ijk,1,1) = max(phi1(ijk,1,1), min(phi_bottom,phi_top))
-	phi1(ijk,1,1) = min(phi1(ijk,1,1), max(phi_bottom,phi_top))
-enddo
+!~ do ijk=1,nxyz
+!~ 	phi1(ijk,1,1) = max(phi1(ijk,1,1), min(phi_bottom,phi_top))
+!~ 	phi1(ijk,1,1) = min(phi1(ijk,1,1), max(phi_bottom,phi_top))
+!~ enddo
 endif
 
 
