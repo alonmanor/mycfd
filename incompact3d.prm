@@ -8,7 +8,7 @@
 1.     #sc   # Schmidt number (if passive scalar)
 1.     #u1   # u1 (max velocity) (for inflow condition)
 1.     #u2   # u2 (min velocity) (for inflow condition) 
-0.125   #noise# Turbulence intensity (1=100%) !! Initial condition (original 0.125)
+0.0   #noise# Turbulence intensity (1=100%) !! Initial condition (original 0.125)
 0.0   #noise1# Turbulence intensity (1=100%) !! Inflow condition
 0.01  #dt   # Time step original 0.005
 #
@@ -31,7 +31,7 @@
 #
 0           #ilit     # Read initial flow field ?
 200            #isave    # Frequency for writing backup file  
-10          #imodulo  # Frequency for visualization for VISU_INSTA
+1          #imodulo  # Frequency for visualization for VISU_INSTA
 #
 # INCOMPACT 3D Body  old school
 #
@@ -47,12 +47,12 @@
 #
 # boundary layer options
 #
-1.0        # ug
+0.0        # ug
 0.0        # dpdx
 -1.0        # damping factor
 1.0        # damping height
-0.0	       # temperature at the bottom
+1.0	       # temperature at the bottom
 0.0        # temperature at the top
-0.0        # buoyancy parameter
+0.1        # buoyancy parameter
 #
 

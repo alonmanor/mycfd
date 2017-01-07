@@ -550,46 +550,46 @@ if (iin.eq.1) then !generation of a random noise
 	!~       endif
 		
 		else!boundary layer (itype.eq.10 or itype.eq.11)  initial scalar gradient
-!~ 			call random_number(phi1)
 !!!!!!!!!!!!!!!debug!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!	
 !!!!    initial gaussian cloud                        !!!		
-			sig_i = 2*(xlx/12.0)**2.0
-			sig_j = 2*(yly/12.0)**2.0
-			sig_k = 2*(zlz/12.0)**2.0
-			do i=1,xsize(1)
-			i_a = i+xstart(1)-1
-			i_f = xlx * dfloat(i_a)/dfloat(nx) - xlx/2.0
-			do j=1,xsize(2)
-			j_a = j+xstart(2)-1
-			j_f = yp(j_a) - yly/2.0
-			do k=1,xsize(3)
-			k_a = k+xstart(3)-1
-			k_f = zlz * dfloat(k_a)/dfloat(nz) - zlz/2.0
-			phi1(i,j,k) = exp(-(i_f**2.0)/sig_i) *&
-			              exp(-(j_f**2.0)/sig_j) *&
-			              exp(-(k_f**2.0)/sig_k)			       
-			phis1(i,j,k)=phi1(i,j,k)
-			phiss1(i,j,k)=phis1(i,j,k)
-			enddo
-			enddo
-			enddo
+!~ 			sig_i = 2*(xlx/12.0)**2.0
+!~ 			sig_j = 2*(yly/12.0)**2.0
+!~ 			sig_k = 2*(zlz/12.0)**2.0
+!~ 			do i=1,xsize(1)
+!~ 			i_a = i+xstart(1)-1
+!~ 			i_f = xlx * dfloat(i_a)/dfloat(nx) - xlx/2.0
+!~ 			do j=1,xsize(2)
+!~ 			j_a = j+xstart(2)-1
+!~ 			j_f = yp(j_a) - yly/2.0
+!~ 			do k=1,xsize(3)
+!~ 			k_a = k+xstart(3)-1
+!~ 			k_f = zlz * dfloat(k_a)/dfloat(nz) - zlz/2.0
+!~ 			phi1(i,j,k) = exp(-(i_f**2.0)/sig_i) *&
+!~ 			              exp(-(j_f**2.0)/sig_j) *&
+!~ 			              exp(-(k_f**2.0)/sig_k)			       
+!~ 			phis1(i,j,k)=phi1(i,j,k)
+!~ 			phiss1(i,j,k)=phis1(i,j,k)
+!~ 			enddo
+!~ 			enddo
+!~ 			enddo
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!			
 			!   initial log profile of scalar
-!~ 			phi1 = 0.01*phi1
-!~ 			do j=1,xsize(2)
-!~ 				ym = 1.e-6 + yp(j+xstart(2)-1)/yp(ny) 
-!~ 				ym = log(ym/1.e-6)/log((1.e-6 + 1.0)/1.e-6)
-!~ 				phi_val = phi_bottom + ym*(phi_top-phi_bottom)
-				!if (nrank.eq.0) print *,ym,phi_val,yp(ny),yp(j+xstart(2)-1)
-!~ 				do k=1,xsize(3)
-!~ 					do i=1,xsize(1)
-!~ 						phi1(i,j,k) = phi1(i,j,k)+phi_val
-!~ 						phis1(i,j,k)=phi1(i,j,k)
-!~ 						phiss1(i,j,k)=phis1(i,j,k)
-!~ 					enddo
-!~ 				enddo
-!~ 			enddo
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			call random_number(phi1)		
+			phi1 = 0.01*(phi1-0.5)
+!~ 			phi1 = 0.0
+			do j=1,xsize(2)
+				ym = 1.e-6 + yp(j+xstart(2)-1)/yp(ny) 
+				ym = log(ym/1.e-6)/log((1.e-6 + 1.0)/1.e-6)
+				phi_val = phi_bottom + ym*(phi_top-phi_bottom)
+!~ 				!if (nrank.eq.0) print *,ym,phi_val,yp(ny),yp(j+xstart(2)-1)
+				do k=1,xsize(3)
+					do i=1,xsize(1)
+						phi1(i,j,k) = phi1(i,j,k)+phi_val
+						phis1(i,j,k)=phi1(i,j,k)
+						phiss1(i,j,k)=phis1(i,j,k)
+					enddo
+				enddo
+			enddo
 	   endif
 	endif
 endif
@@ -627,6 +627,30 @@ if (ivirt==2) then
    print *,ep1
 endif
 
+return
+end subroutine init
+
+
+!********************************************************************
+!
+subroutine init_general ()
+!
+!********************************************************************
+
+USE decomp_2d
+USE decomp_2d_io
+USE variables
+USE param
+USE MPI
+
+implicit none
+
+
+real(mytype) :: y,r,um,r1,r2,r3,ym,phi_val,i_f,j_f,k_f,sig_i,sig_j,sig_k
+integer :: k,j,i,fh,ierror,ii,i_a,j_a,k_a
+integer :: code
+integer (kind=MPI_OFFSET_KIND) :: disp
+
 if (iles > 0) then !initialize the deltabar array
 	do j=1,ny
 		if (istret > 0) then
@@ -635,7 +659,7 @@ if (iles > 0) then !initialize the deltabar array
 			delta_bar(j) = (dx*dz*dy)**(1.0/3.0)
 	   endif
 !~ 	   if (nrank.eq.0) print *,'delta_bar',j,delta_bar(j)
-	enddo
+	enddo	
 	Csmag = 0.16; Csigma = 1.35
 endif
 
@@ -654,7 +678,10 @@ if (damp.gt.0.0) then
 endif
 
 return
-end subroutine init
+
+
+end subroutine init_general
+
 
 !********************************************************************
 !

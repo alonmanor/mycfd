@@ -171,6 +171,14 @@ read(101,*) iles
     write(nfil,*)'                  uz'//chits
     write(nfil,*)'               </DataItem>'
     write(nfil,*)'            </Attribute>'
+    
+    write(nfil,*)'            <Attribute Name="pp" Center="Node">'
+    write(nfil,*)'               <DataItem Format="Binary" '
+    write(nfil,*)'                DataType="Float" Precision="8" Endian="little"'
+    write(nfil,*)'                Dimensions="',nz,ny,nx,'">'
+    write(nfil,*)'                  pp'//chits
+    write(nfil,*)'               </DataItem>'
+    write(nfil,*)'            </Attribute>'
 	
 	if (iscalar.eq.1) then
 		write(nfil,*)'            <Attribute Name="phi" Center="Node">'

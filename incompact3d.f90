@@ -83,6 +83,8 @@ call decomp_2d_poisson_init(bcx,bcy,bcz)
 
 call decomp_info_init(nxm,nym,nzm,phG)
 
+call init_general()
+
 !if you want to collect 100 snapshots randomly on XXXXX time steps
 !call collect_data() !it will generate 100 random time steps
 
