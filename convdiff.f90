@@ -698,11 +698,15 @@ call derx (ta1,phi1,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1) !dphi/dx
 !~ call showval1(xnu_sgs1, 5, 5, 5)
 do ijk=1,nvect1
 	!(nu_mol+nu_sgs)*(dphi/dx) -> ta1
-	ta1(ijk,1,1)=(xnu_sgs1(ijk,1,1)/prtdl+xnu/sc)*ta1(ijk,1,1)  
+	ta1(ijk,1,1)=(xnu_sgs1(ijk,1,1)/prtdl)*ta1(ijk,1,1)  
 enddo
 !d/dx((nu_mol+nu_sgs)*dphi/dx )-> tau_phi_x1 dissipation+SGS term
 !phi is symmetric across the boundary, so ta1 is a-symmetric
 call derx (tau_phi_x1,ta1,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0)
+call derxx (ta1,phi1,di1,sx,sfxp,ssxp,swxp,xsize(1),xsize(2),xsize(3),1)
+tau_phi_x1 = tau_phi_x1 + xnu/sc*ta1
+
+
 
 
 call transpose_x_to_y(phi1,phi2)
@@ -718,10 +722,24 @@ call dery (ta2,phi2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1)!dphi
 !~ call showval2(xnu_sgs2, 5, 5, 5)
 do ijk=1,nvect2
 	!(nu_mol+nu_sgs)*(dphi/dy) -> ta2
-	ta2(ijk,1,1)=(xnu_sgs2(ijk,1,1)/prtdl+xnu/sc)*ta2(ijk,1,1) 
+	ta2(ijk,1,1)=(xnu_sgs2(ijk,1,1)/prtdl)*ta2(ijk,1,1) 
 enddo
 !d/dy((nu_mol+nu_sgs)*dphi/dy ) -> tau_phi_y2 dissipation+SGS term
 call dery (tau_phi_y2,ta2,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0)  
+if (istret.ne.0) then 
+   call deryy (ta2,phi2,di2,sy,sfyp,ssyp,swyp,ysize(1),ysize(2),ysize(3),1)
+   call dery (tc2,phi2,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0)
+   do k=1,ysize(3)
+   do j=1,ysize(2)
+   do i=1,ysize(1)
+      ta2(i,j,k)=ta2(i,j,k)*pp2y(j)-pp4y(j)*tc2(i,j,k)
+   enddo
+   enddo
+   enddo
+else
+   call deryy (ta2,phi2,di2,sy,sfyp,ssyp,swyp,ysize(1),ysize(2),ysize(3),1) 
+endif
+tau_phi_y2 = tau_phi_y2 + xnu/sc*ta2
 
 !call showval2(tau_phi_y2, 1,2,1)
 call transpose_y_to_z(phi2,phi3)
@@ -736,10 +754,12 @@ call derz (ta3,phi3,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),0)!dphi/dz 
 !~ call showval3(xnu_sgs3, 5, 5, 5)
 do ijk=1,nvect3
 	!(nu_mol+nu_sgs)*(dphi/dz) -> ta3
-	ta3(ijk,1,1)=(xnu_sgs3(ijk,1,1)/prtdl+xnu/sc)*ta3(ijk,1,1) 
+	ta3(ijk,1,1)=(xnu_sgs3(ijk,1,1)/prtdl)*ta3(ijk,1,1) 
 enddo
 !d/dz((nu_mol+nu_sgs)*dphi/dz ) -> tau_phi_z3 dissipation+SGS term
 call derz (tau_phi_z3,ta3,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),0)
+call derzz (ta3,phi3,di3,sz,sfzp,sszp,swzp,zsize(1),zsize(2),zsize(3),1)
+tau_phi_z3 = tau_phi_z3 + xnu/sc*ta3
 
 
 call transpose_z_to_y(tau_phi_z3,tc2)

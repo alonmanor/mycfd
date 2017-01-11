@@ -173,9 +173,9 @@ do itime=ifirst,ilast
 
       !X PENCILS
       call intt (ux1,uy1,uz1,gx1,gy1,gz1,hx1,hy1,hz1,ta1,tb1,tc1) 
-
-
+	  
       call pre_correc(ux1,uy1,uz1)
+            
       if (iscalar==1) call scalar_sources(phi1,phis1,phiss1)
 
       if (ivirt==1) then !solid body old school
@@ -199,7 +199,7 @@ do itime=ifirst,ilast
 
       !X PENCILS
       call corgp(ux1,ux2,uy1,uz1,px1,py1,pz1) 
-      
+
      !does not matter -->output=DIV U=0 (in dv3)
       call divergence (ux1,uy1,uz1,ep1,ta1,tb1,tc1,di1,td1,te1,tf1,&
            td2,te2,tf2,di2,ta2,tb2,tc2,ta3,tb3,tc3,di3,td3,te3,tf3,dv3,&

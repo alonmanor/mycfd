@@ -1,27 +1,27 @@
 #
 # INCOMPACT 3D Flow parameters 
 #
-12.5663706144   #xlx  # Lx (Size of the box in x-direction)
-2.    #yly  # Ly (Size of the box in y-direction) 
-4.18879020479     #zlz  # Lz (Size of the box in z-direction) 
-4200.   #re   # Reynolds number (original 4200)
+5.0   #xlx  # Lx (Size of the box in x-direction) original 12.5663706144
+1.0    #yly  # Ly (Size of the box in y-direction) original 2.0
+2.0     #zlz  # Lz (Size of the box in z-direction) original 4.18879020479
+2000.   #re   # Reynolds number (original 4200)
 1.     #sc   # Schmidt number (if passive scalar)
 1.     #u1   # u1 (max velocity) (for inflow condition)
 1.     #u2   # u2 (min velocity) (for inflow condition) 
-0.0   #noise# Turbulence intensity (1=100%) !! Initial condition (original 0.125)
+0.125   #noise# Turbulence intensity (1=100%) !! Initial condition (original 0.125)
 0.0   #noise1# Turbulence intensity (1=100%) !! Inflow condition
-0.01  #dt   # Time step original 0.005
+0.005  #dt   # Time step original 0.005
 #
 # INCOMPACT3D Flow configuration
 #
 0      #nclx   # nclx (BC)
-2      #ncly   # ncly (BC) 
+1      #ncly   # ncly (BC) 
 0      #nclz   # nclz (BC)
-11      #itype  # Type of flow  
+10      #itype  # Type of flow  
 1      #iin    # Inflow condition (1: classic, 2: turbinit)
 1      #ifirst # First iteration   
 20000      #ilast  # Last iteration 
-2      #nscheme# Temporal scheme (1:AB2, 2: RK3, 3:RK4, 4:AB3)
+1      #nscheme# Temporal scheme (1:AB2, 2: RK3, 3:RK4, 4:AB3)
 0      #istret # y mesh refinement (0:no, 1:center, 2:both sides, 3:bottom)
 0.259065151  #beta   # Refinement parameter (beta) 
 1      #iskew  # (0:urotu, 1:skew, for the convective terms)
@@ -43,16 +43,16 @@
 #
 # explicit LES parameters
 #
-2          # SGS model (0: No LES, 1: Smagorinsky, 2: sigma, 4: SVM using S_ij, 5: SVM using vorticity)
+0          # SGS model (0: No LES, 1: Smagorinsky, 2: sigma, 4: SVM using S_ij, 5: SVM using vorticity)
 #
 # boundary layer options
 #
 0.0        # ug
-0.0        # dpdx
+1.1        # dpdx
 -1.0        # damping factor
 1.0        # damping height
-1.0	       # temperature at the bottom
+-1.0	       # temperature at the bottom
 0.0        # temperature at the top
-0.1        # buoyancy parameter
+0.0        # buoyancy parameter
 #
 

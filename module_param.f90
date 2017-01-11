@@ -49,7 +49,8 @@ module variables
 !4-->every 4 mesh nodes
 !nvisu = size for visualization collection
 !~ integer,parameter :: nx=128,ny=129,nz=84
-integer,parameter :: nx=64,ny=65,nz=64
+!~ integer,parameter :: nx=64,ny=65,nz=64
+integer,parameter :: nx=128,ny=64,nz=64 !ping he - small machine
 integer,parameter :: nstat=1,nvisu=1
 integer,parameter :: p_row=2,p_col=2
 integer,parameter :: nxm=nx,nym=ny-1,nzm=nz 
@@ -154,7 +155,7 @@ use decomp_2d, only : mytype
                   u_geos,dpdx_drive,damp,damp_height,&
                   phi_bottom,phi_top,buoy_param
   real(mytype) :: t,xxk1,xxk2
-  real(mytype) :: prtdl=0.7
+  real(mytype),parameter :: prtdl=0.7
   integer :: itr,itime
   character :: filesauve*80, filenoise*80, &
        nchamp*80,filepath*80, fileturb*80, filevisu*80 

@@ -480,15 +480,17 @@ integer (kind=MPI_OFFSET_KIND) :: disp
 if (iin.eq.1) then !generation of a random noise
 
 
-!~ call system_clock(count=code)
-!~ call random_seed(size = ii)
-!~ call random_seed(put = code+63946*nrank*(/ (i - 1, i = 1, ii) /)) !
+call system_clock(count=code)
+!~ code = 10 !arbitrary
+call random_seed(size = ii)
+call random_seed(put = code+63946*nrank*(/ (i - 1, i = 1, ii) /)) !
 
 
     
    call random_number(ux1)
    call random_number(uy1)
    call random_number(uz1)
+   print *,nrank,ux1(5,5,5)
 
 
 
@@ -655,8 +657,10 @@ if (iles > 0) then !initialize the deltabar array
 	do j=1,ny
 		if (istret > 0) then
 			delta_bar(j) = (dx*dz*dy/ppy(j))**(1.0/3.0)
+!~ 			delta_bar(j) = (dx**2.0+dz**2.0+(dy/ppy(j))**2.0)**0.5
 	   else
 			delta_bar(j) = (dx*dz*dy)**(1.0/3.0)
+!~ 			delta_bar(j) = (dx**2.0+dz**2.0+dy**2.0)**0.5
 	   endif
 !~ 	   if (nrank.eq.0) print *,'delta_bar',j,delta_bar(j)
 	enddo	
