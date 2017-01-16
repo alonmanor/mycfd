@@ -850,6 +850,9 @@ end subroutine scalar_les_eddy_visc
 !
 subroutine scalar_les_svm(ux1,uy1,uz1,phi1,phis1,phiss1,di1,ta1,tb1,tc1,td1,&
      uy2,uz2,phi2,di2,ta2,tb2,tc2,td2,uz3,phi3,di3,ta3,tb3,epsi,&
+     dphidx1	   ,dphidx2   ,dphidx3,&
+     dphidy1	   ,dphidy2   ,dphidy3,&
+     dphidz1	   ,dphidz2   ,dphidz3,&
      k_sgs1    ,k_sgs2   ,k_sgs3,&
 	 e_svm_x1  ,e_svm_y1  ,e_svm_z1,&
 	 e_svm_x2  ,e_svm_y2  ,e_svm_z2,&
@@ -865,12 +868,15 @@ implicit none
 
 real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1,phi1,phis1,&
                                               phiss1,di1,ta1,tb1,tc1,td1,epsi,xnu_sgs1,&
-                                              tau_phi_x1,k_sgs1,e_svm_x1,e_svm_y1,e_svm_z1
+                                              k_sgs1,e_svm_x1,e_svm_y1,e_svm_z1,&
+                                              dphidx1,dphidy1,dphidz1
 real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: uy2,uz2,phi2,di2,ta2,tb2,&
-											  tc2,td2,xnu_sgs2,tau_phi_y2,k_sgs2,&
-											  e_svm_x2,e_svm_y2,e_svm_z2
-real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: uz3,phi3,di3,ta3,tb3,tau_phi_z3,&
-											  k_sgs3, e_svm_x3  ,e_svm_y3  ,e_svm_z3
+											  tc2,td2,xnu_sgs2,k_sgs2,&
+											  e_svm_x2,e_svm_y2,e_svm_z2,&
+											  dphidx2,dphidy2,dphidz2
+real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: uz3,phi3,di3,ta3,tb3,&
+											  k_sgs3,e_svm_x3,e_svm_y3,e_svm_z3,&
+											  dphidx3,dphidy3,dphidz3
 
 integer :: ijk,nvect1,nvect2,nvect3,i,j,k,nxyz
 real(mytype) :: x,y,z
@@ -883,16 +889,9 @@ nvect3=zsize(1)*zsize(2)*zsize(3)
 do ijk=1,nvect1
    ta1(ijk,1,1)=ux1(ijk,1,1)*phi1(ijk,1,1)
 enddo
-call derx (tb1,ta1,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0) !d(u*phi)/dx -> tb1
+call derx (tb1,ta1,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0)
 call derxx (ta1,phi1,di1,sx,sfxp,ssxp,swxp,xsize(1),xsize(2),xsize(3),1)
-!~ call derx (ta1,phi1,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1) !dphi/dx -> ta1
-do ijk=1,nvect1
-	!(nu_mol+nu_sgs)*(dphi/dx) -> ta1
-	ta1(ijk,1,1)=(xnu_sgs1(ijk,1,1)+xnu/sc)*ta1(ijk,1,1)  
-enddo
-!d/dx((nu_mol+nu_sgs)*dphi/dx )-> tau_phi_x1 dissipation+SGS term
-!phi is symmetric across the boundary, so ta1 is a-symmetric
-call derx (tau_phi_x1,ta1,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0)  
+
 
 call transpose_x_to_y(phi1,phi2)
 call transpose_x_to_y(uy1,uy2)
@@ -902,53 +901,108 @@ call transpose_x_to_y(uz1,uz2)
 do ijk=1,nvect2
    ta2(ijk,1,1)=uy2(ijk,1,1)*phi2(ijk,1,1)
 enddo
-call dery (tb2,ta2,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0)!d(v*phi)/dy -> tb2
-call dery (ta2,phi2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1)!dphi/dy -> ta2
-do ijk=1,nvect2
-	!(nu_mol+nu_sgs)*(dphi/dy) -> ta2
-	ta2(ijk,1,1)=(xnu_sgs2(ijk,1,1)+xnu/sc)*ta2(ijk,1,1) 
-enddo
-!d/dy((nu_mol+nu_sgs)*dphi/dy ) -> tau_phi_y2 dissipation+SGS term
-call dery (tau_phi_y2,ta2,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0)  
+call dery (tb2,ta2,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0)
+if (istret.ne.0) then 
+   call deryy (ta2,phi2,di2,sy,sfyp,ssyp,swyp,ysize(1),ysize(2),ysize(3),1)
+   call dery (tc2,phi2,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0)
+   do k=1,ysize(3)
+   do j=1,ysize(2)
+   do i=1,ysize(1)
+      ta2(i,j,k)=ta2(i,j,k)*pp2y(j)-pp4y(j)*tc2(i,j,k)
+   enddo
+   enddo
+   enddo
+else
+   call deryy (ta2,phi2,di2,sy,sfyp,ssyp,swyp,ysize(1),ysize(2),ysize(3),1) 
+endif
 
 call transpose_y_to_z(phi2,phi3)
 call transpose_y_to_z(uz2,uz3)
+
 
 !Z PENCILS
 do ijk=1,nvect3
    ta3(ijk,1,1)=uz3(ijk,1,1)*phi3(ijk,1,1)
 enddo
-call derz (tb3,ta3,di3,sz,ffz,fsz,fwz,zsize(1),zsize(2),zsize(3),0)!d(w*phi)/dz -> tb3
-call derz (ta3,phi3,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),0)!dphi/dz -> ta2
-do ijk=1,nvect3
-	!(nu_mol+nu_sgs)*(dphi/dz) -> ta3
-	!ta3(ijk,1,1)=(xnu_sgs3(ijk,1,1)+xnu/sc)*ta3(ijk,1,1) 
-enddo
-!d/dz((nu_mol+nu_sgs)*dphi/dz ) -> tau_phi_z3 dissipation+SGS term
-call derz (tau_phi_z3,ta3,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),0)
+call derz (tb3,ta3,di3,sz,ffz,fsz,fwz,zsize(1),zsize(2),zsize(3),0)
+call derzz (ta3,phi3,di3,sz,sfzp,sszp,swzp,zsize(1),zsize(2),zsize(3),1)
 
-
-call transpose_z_to_y(tau_phi_z3,tc2)
+call transpose_z_to_y(ta3,tc2)
 call transpose_z_to_y(tb3,td2)
 
 !Y PENCILS ADD TERMS
 do ijk=1,nvect2
-   tau_phi_y2(ijk,1,1)=tc2(ijk,1,1)+tau_phi_y2(ijk,1,1)
+   tc2(ijk,1,1)=tc2(ijk,1,1)+ta2(ijk,1,1)
    td2(ijk,1,1)=td2(ijk,1,1)+tb2(ijk,1,1)
 enddo
 
-call transpose_y_to_x(tau_phi_y2,tc1)
+call transpose_y_to_x(tc2,tc1)
 call transpose_y_to_x(td2,td1)
 
 !X PENCILS ADD TERMS
 do ijk=1,nvect1
-   tau_phi_x1(ijk,1,1)=tau_phi_x1(ijk,1,1)+tc1(ijk,1,1) !diffusion + SGS term
-   tb1(ijk,1,1)=tb1(ijk,1,1)+td1(ijk,1,1) !advection term
+   ta1(ijk,1,1)=ta1(ijk,1,1)+tc1(ijk,1,1) !SECOND DERIVATIVE
+   tb1(ijk,1,1)=tb1(ijk,1,1)+td1(ijk,1,1) !FIRST DERIVATIVE
 enddo
  
 do ijk=1,nvect1
-   ta1(ijk,1,1)=ta1(ijk,1,1)-tb1(ijk,1,1) 
+   ta1(ijk,1,1)=xnu/sc*ta1(ijk,1,1)-tb1(ijk,1,1) 
 enddo
+
+!SVM scalar treatment (pullin, 2000)
+
+call derx (dphidx1,phi1,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1)
+call transpose_x_to_y(dphidx1,dphidx2)
+call dery (dphidy2,phi2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1)
+call transpose_y_to_z(dphidy2,dphidy3)
+call transpose_y_to_z(dphidx2,dphidx3)
+call derz (dphidz3,phi3,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),1)
+! q_z -> ta3
+ta3     = sqrt(k_sgs3(:,:,:))*(&
+			  (   -e_svm_x3(:,:,:)*e_svm_z3(:,:,:))*dphidx3(:,:,:) &
+			+ (   -e_svm_y3(:,:,:)*e_svm_z3(:,:,:))*dphidy3(:,:,:) &
+			+ (1.0-e_svm_z3(:,:,:)*e_svm_z3(:,:,:))*dphidz3(:,:,:)  )
+! d(q_z)/dz -> tb3
+call derz (tb3,ta3,di3,sz,ffz,fsz,fwz,zsize(1),zsize(2),zsize(3),0)
+
+call transpose_z_to_y(tb3,tb2)
+call transpose_z_to_y(dphidz3,dphidz2)
+! q_y -> ta2
+ta2     = sqrt(k_sgs2(:,:,:))*(&
+			  (   -e_svm_x2(:,:,:)*e_svm_y2(:,:,:))*dphidx2(:,:,:) &
+			+ (1.0-e_svm_y2(:,:,:)*e_svm_y2(:,:,:))*dphidy2(:,:,:) &
+			+ (   -e_svm_z2(:,:,:)*e_svm_y2(:,:,:))*dphidz2(:,:,:)  )
+! d(q_y)/dy -> tc2
+call dery (tc2,ta2,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0)
+! d(q_z)/dz + d(q_y)/dy
+tb2(:,:,:) = tb2(:,:,:) + tc2(:,:,:)
+
+call transpose_y_to_x(tb2,tb1)
+call transpose_y_to_x(dphidz2,dphidz1)
+call transpose_y_to_x(dphidy2,dphidy1)
+! q_x -> td1
+td1 = sqrt(k_sgs1(:,:,:))*(&
+			  (1.0-e_svm_x1(:,:,:)*e_svm_x1(:,:,:))*dphidx1(:,:,:) &
+			+ (   -e_svm_y1(:,:,:)*e_svm_x1(:,:,:))*dphidy1(:,:,:) &
+			+ (   -e_svm_z1(:,:,:)*e_svm_x1(:,:,:))*dphidz1(:,:,:)  )
+! d(q_x)/dx -> tc1
+call derx (tc1,td1,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0)
+! d(q_z)/dz + d(q_y)/dy + d(q_x)/dx
+tb1(:,:,:) = tb1(:,:,:) + tc1(:,:,:)
+
+! add to the total trend
+if (istret > 0) then
+	do j=1,xsize(2)
+		do i=1,xsize(1)
+			do k=1,xsize(3)
+				ta1(i,j,k) = ta1(i,j,k) + (0.25*delta_bar(zstart(2)-1+j) * tb1(i,j,k))
+			enddo
+		enddo
+	enddo
+else
+	ta1(:,:,:) = ta1(:,:,:) + (0.25*delta_bar(1) * tb1(:,:,:))
+endif
+
 
 !TIME ADVANCEMENT
 nxyz=xsize(1)*xsize(2)*xsize(3)  
@@ -998,7 +1052,6 @@ if (nscheme==4) then
       endif
    endif
 endif
-
 
  end subroutine scalar_les_svm
 

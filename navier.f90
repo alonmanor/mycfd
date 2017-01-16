@@ -477,6 +477,7 @@ integer :: k,j,i,fh,ierror,ii,i_a,j_a,k_a
 integer :: code
 integer (kind=MPI_OFFSET_KIND) :: disp
 
+
 if (iin.eq.1) then !generation of a random noise
 
 
@@ -597,6 +598,12 @@ call random_seed(put = code+63946*nrank*(/ (i - 1, i = 1, ii) /)) !
 endif
 
 if (iin.eq.2) then !read a correlated noise generated before
+	call decomp_2d_read_one(1,ux1,'ux_init.dat')
+	call decomp_2d_read_one(1,uy1,'uy_init.dat')
+	call decomp_2d_read_one(1,uz1,'uz_init.dat')
+	if (iscalar.eq.1) then
+		call decomp_2d_read_one(1,phi1,'phi_init.dat')
+	endif
 endif
 
 !MEAN FLOW PROFILE

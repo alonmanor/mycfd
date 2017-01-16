@@ -60,6 +60,9 @@ do j=1,xsize(2)
 do i=1,xsize(1)
    if (phi(i,j,k).gt.phimax) phimax=phi(i,j,k)
    if (phi(i,j,k).lt.phimin) phimin=phi(i,j,k)
+!~    if (phi(i,j,k).lt.phi_bottom) then
+!~    print *,nrank,xstart(1)-1+i,xstart(2)-1+j,xstart(3)-1+k,phi(i,j,k)
+!~ 	endif
 enddo
 enddo
 enddo

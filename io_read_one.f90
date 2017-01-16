@@ -54,6 +54,7 @@
     call MPI_FILE_OPEN(MPI_COMM_WORLD, filename, &
          MPI_MODE_RDONLY, MPI_INFO_NULL, &
          fh, ierror)
+         print *,'ierror=',ierror
     disp = 0_MPI_OFFSET_KIND
     call MPI_FILE_SET_VIEW(fh,disp,data_type, &
          newtype,'native',MPI_INFO_NULL,ierror)

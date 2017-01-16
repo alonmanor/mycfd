@@ -81,7 +81,9 @@ real(mytype), save, allocatable, dimension(:,:,:) :: tau_phi_x1,tau_phi_y2,tau_p
 real(mytype), save, allocatable, dimension(:,:,:) :: k_sgs1,e_svm_x1,e_svm_y1,e_svm_z1  
 real(mytype), save, allocatable, dimension(:,:,:) :: k_sgs2,e_svm_x2,e_svm_y2,e_svm_z2
 real(mytype), save, allocatable, dimension(:,:,:) :: k_sgs3,e_svm_x3,e_svm_y3,e_svm_z3
-
+real(mytype), save, allocatable, dimension(:,:,:) :: dphidx1,dphidy1,dphidz1
+real(mytype), save, allocatable, dimension(:,:,:) :: dphidx2,dphidy2,dphidz2
+real(mytype), save, allocatable, dimension(:,:,:) :: dphidx3,dphidy3,dphidz3
 
 ! 
 integer, save :: nxmsize, nymsize, nzmsize 
@@ -142,9 +144,9 @@ contains
 		endif
 		if ((iles.eq.4).or.(iles.eq.5)) then
 			call alloc_x(k_sgs1);  call alloc_x(e_svm_x1); 
-!~ 			print *,'hi'
-!~ 			k_sgs1(1,1,1) = 1.0
 			call alloc_x(e_svm_y1);  call alloc_x(e_svm_z1);
+			call alloc_x(dphidx1);  call alloc_x(dphidy1);
+			call alloc_x(dphidz1);
 		endif
 	endif
     allocate(sx(xsize(2),xsize(3)),vx(xsize(2),xsize(3)))
@@ -210,6 +212,8 @@ contains
 		if ((iles.eq.4).or.(iles.eq.5)) then
 			call alloc_y(k_sgs2);  call alloc_y(e_svm_x2); 
 			call alloc_y(e_svm_y2);  call alloc_y(e_svm_z2);
+			call alloc_y(dphidx2);  call alloc_y(dphidy2);
+			call alloc_y(dphidz2);
 		endif		
 	endif
     allocate(sy(ysize(1),ysize(3)),vy(ysize(1),ysize(3)))
@@ -232,6 +236,8 @@ contains
 		if ((iles.eq.4).or.(iles.eq.5)) then
 			call alloc_z(k_sgs3);  call alloc_z(e_svm_x3); 
 			call alloc_z(e_svm_y3);  call alloc_z(e_svm_z3);
+			call alloc_z(dphidx3);  call alloc_z(dphidy3);
+			call alloc_z(dphidz3);
 		endif		
 	endif
     allocate(sz(zsize(1),zsize(2)),vz(zsize(1),zsize(2)))

@@ -160,6 +160,9 @@ do itime=ifirst,ilast
 			if ((iles.eq.4).or.(iles.eq.5)) then !SVM scalar dynamics
 			call scalar_les_svm(ux1,uy1,uz1,phi1,phis1,phiss1,di1,tg1,th1,ti1,td1,&
 				  uy2,uz2,phi2,di2,ta2,tb2,tc2,td2,uz3,phi3,di3,ta3,tb3,ep1,&
+				  dphidx1	,dphidx2   ,dphidx3,&
+				  dphidy1	,dphidy2   ,dphidy3,&
+				  dphidz1    ,dphidz2   ,dphidz3,&
 				  k_sgs1    ,k_sgs2   ,k_sgs3,&
 				  e_svm_x1  ,e_svm_y1  ,e_svm_z1,&
 				  e_svm_x2  ,e_svm_y2  ,e_svm_z2,&
