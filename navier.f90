@@ -669,7 +669,7 @@ if (iles > 0) then !initialize the deltabar array
 			delta_bar(j) = (dx*dz*dy)**(1.0/3.0)
 !~ 			delta_bar(j) = (dx**2.0+dz**2.0+dy**2.0)**0.5
 	   endif
-!~ 	   if (nrank.eq.0) print *,'delta_bar',j,delta_bar(j)
+	   if (nrank.eq.0) print *,'delta_bar',j,delta_bar(j)
 	enddo	
 	Csmag = 0.16; Csigma = 1.35
 endif
@@ -1054,7 +1054,11 @@ logical, dimension(2) :: dummy_periods
 if (xstart(2) == 1) then
 	do i=1,xsize(1)
 		do k=1,xsize(3)
-			phi(i,1,k) = phi_bottom
+			if (iwall.eq.1) then
+				phi(i,1,k) = phi_bottom + (phi(i,2,k) - phi_bottom) / 2.0
+			else
+				phi(i,1,k) = phi_bottom
+			endif
 			phis(i,1,k) = 0.0
 			phiss(i,1,k) = 0.0
 		enddo
@@ -1258,9 +1262,6 @@ if (itype.eq.10) then
    call MPI_CART_GET(DECOMP_2D_COMM_CART_X, 2, &
          dims, dummy_periods, dummy_coords, code)
 !~     print *,'dims', (dims(i), i=1,2)
-	
-
-
    if (dims(1)==1) then
       do k=1,xsize(3)
       do i=1,xsize(1)
@@ -1297,13 +1298,19 @@ if (itype.eq.10) then
    if (dims(1)==1) then
       do k=1,xsize(3)
       do i=1,xsize(1)
+		! for the lower layer, zero out all velocity components
          ux(i,1,k)=0.+dpdxy1(i,k)
          uy(i,1,k)=0.
          uz(i,1,k)=0.+dpdzy1(i,k)
+         if (iwall.eq.1) then !ad hoc wall model for Ping's data (y=0 is "lifted" yp(2) up)
+			ux(i,1,k) = ux(i,1,k) + ux(i,2,k) / 2.0
+			uz(i,1,k) = uz(i,1,k) + uz(i,2,k) / 2.0
+         endif
       enddo
       enddo
       do k=1,xsize(3)
       do i=1,xsize(1)
+		! for the upper layer, zero out only vertical velocity (free slip)
          uy(i,xsize(2),k)=0.
       enddo
       enddo
@@ -1313,9 +1320,13 @@ if (itype.eq.10) then
 !~ 		 print *,'lower bdy nrank',nrank,'k=',xstart(3),'->',xend(3),'i=',xstart(1),'->',xend(1)
          do k=1,xsize(3)
          do i=1,xsize(1)
-            ux(i,1,k)=0.+dpdxy1(i,k)
+            ux(i,1,k)=0.!+dpdxy1(i,k)
             uy(i,1,k)=0.
-            uz(i,1,k)=0.+dpdzy1(i,k)
+            uz(i,1,k)=0.!+dpdzy1(i,k)
+            if (iwall.eq.1) then !ad hoc wall model for Ping's data (y=0 is "lifted" yp(2) up)
+				ux(i,1,k) = ux(i,1,k) + ux(i,2,k) / 2.0
+				uz(i,1,k) = uz(i,1,k) + uz(i,2,k) / 2.0
+			endif
          enddo
          enddo
       endif

@@ -97,6 +97,15 @@ alsaix=(45.*fpi2*pi*pi-272.)/(2.*(45.*fpi2*pi*pi-208.))
 asix  =((6.-9.*alsaix)/4.)/dx2
 bsix  =((-3.+24*alsaix)/5.)/(4.*dx2)
 csix  =((2.-11.*alsaix)/20.)/(9.*dx2)
+!~ if (iimples.eq.1) then
+!~ 	k_c = 2.0*pi*pi
+!~ 	k_m = 6.2
+!~ 	denom = 64.0*k_m*dx2-54.0*kc*dx2+48.0
+!~ 	alpha = ( -27.0*kc*dx2+64.0*km*dx2       -96.0)/denom
+!~ 	a     = (  54.0*kc*dx2-15.0*kc*dx2*km*dx2+12.0)/denom
+!~ 	b     = (-216.0*kc*dx2+24.0*kc*dx2*km*dx2+192.0*km*dx2 -48.0)/denom
+!~ 	c     = (  54.0*kc*dx2- 9.0*kc*dx2*km*dx2-108.0)/denom
+!~ endif
 !      stop
 !if (nrank==0) then
 !      write(*,*) '=== derxx ==='

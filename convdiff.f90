@@ -171,7 +171,7 @@ else !SKEW!
    call dery (ti2,tf2,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0) 
    call dery (td2,ux2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1) 
    call dery (te2,uy2,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0)
-   call dery (tf2,uz2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1) 
+   call dery (tf2,uz2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1)    
    if (iles > 0) then
         do ijk=1,nvect2
             duxdy2(ijk,1,1) = td2(ijk,1,1)
@@ -467,8 +467,15 @@ endif
 
 !FINAL SUM: DIFF TERMS + CONV TERMS
 ta1(:,:,:)=xnu*ta1(:,:,:)-tg1(:,:,:)
-tb1(:,:,:)=xnu*tb1(:,:,:)-th1(:,:,:)+buoy_param*phi1(:,:,:)
+tb1(:,:,:)=xnu*tb1(:,:,:)-th1(:,:,:)
 tc1(:,:,:)=xnu*tc1(:,:,:)-ti1(:,:,:)
+do i=1,xsize(1)
+	do j=1,xsize(2)
+		do k=1,xsize(3)
+			tb1(i,j,k) = tb1(i,j,k) + buoy_param*phi1(i,j,k)
+		enddo
+	enddo
+enddo
 if (iles > 0) then
 	ta1(:,:,:)=-div_tau_x1(:,:,:) + ta1(:,:,:)
     tb1(:,:,:)=-div_tau_y1(:,:,:) + tb1(:,:,:)
@@ -835,10 +842,10 @@ if (nscheme==4) then
 endif
 if (itype.gt.9) then
 !clip scalar to mix-max values
-!~ do ijk=1,nxyz
-!~ 	phi1(ijk,1,1) = max(phi1(ijk,1,1), min(phi_bottom,phi_top))
-!~ 	phi1(ijk,1,1) = min(phi1(ijk,1,1), max(phi_bottom,phi_top))
-!~ enddo
+do ijk=1,nxyz
+	phi1(ijk,1,1) = max(phi1(ijk,1,1), min(phi_bottom,phi_top))
+	phi1(ijk,1,1) = min(phi1(ijk,1,1), max(phi_bottom,phi_top))
+enddo
 endif
 
 
@@ -1052,7 +1059,13 @@ if (nscheme==4) then
       endif
    endif
 endif
-
+if (itype.gt.9) then
+!clip scalar to mix-max values
+do ijk=1,nxyz
+	phi1(ijk,1,1) = max(phi1(ijk,1,1), min(phi_bottom,phi_top))
+	phi1(ijk,1,1) = min(phi1(ijk,1,1), max(phi_bottom,phi_top))
+enddo
+endif
  end subroutine scalar_les_svm
 
 

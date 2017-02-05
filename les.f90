@@ -135,14 +135,15 @@ subroutine q_integral(r,delta,cos_phi,q)
 	implicit none
 	
 	real(mytype),intent(IN) :: r,delta,cos_phi
-	real(mytype) :: G1,C1,d,f,g,s,numerator,denominator,sigma
+	real(mytype) :: G1,C1,d,f,g,s,numerator,denominator,sigma,delta_eff
 	real(mytype),intent(OUT) :: q
 	
+	delta_eff = min(delta,2.*dy)
 	sigma = 1.0-cos_phi**2.0
 	G1 = pi*(2.0 - sigma/3.0 - sigma**2/12.0 - &
 			25.0*sigma**3.0/648.0-175.0*sigma**4.0/7776.0)
-    C1 = 1.069462! pi / 2**(2./3.) / sqrt(3.0) / gamma(4./3) ** 2.0
-    d = r/delta
+    C1 = 1.432! pi / 2**(2./3.) / sqrt(3.0) / gamma(4./3) ** 2.0
+    d = r/delta_eff
     f = 2.710301 !3.0*pi**(7./3)/16
     g = C1*G1
     s = 2.0-sigma

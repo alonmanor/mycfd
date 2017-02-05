@@ -54,5 +54,6 @@
 -1.0	       # temperature at the bottom
 0.0        # temperature at the top
 0.0        # buoyancy parameter
+1          # iwall (lower wall treatment for itype 10. 0:no wall treatment, 1:linear interpolation)
 #
 

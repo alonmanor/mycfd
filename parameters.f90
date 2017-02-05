@@ -114,6 +114,7 @@ read (10,*) damp_height
 read (10,*) phi_bottom
 read (10,*) phi_top
 read (10,*) buoy_param
+read (10,*) iwall
 close(10) 
 if (nrank==0) then
 print *,'==========================================================='

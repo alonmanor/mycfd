@@ -197,6 +197,14 @@ read(101,*) iles
 		write(nfil,*)'                  tke_sgs'//chits
 		write(nfil,*)'               </DataItem>'
 		write(nfil,*)'            </Attribute>'
+		
+		write(nfil,*)'            <Attribute Name="dissipation" Center="Node">'
+		write(nfil,*)'               <DataItem Format="Binary" '
+		write(nfil,*)'                DataType="Float" Precision="8" Endian="little"'
+		write(nfil,*)'                Dimensions="',nz,ny,nx,'">'
+		write(nfil,*)'                  diss'//chits
+		write(nfil,*)'               </DataItem>'
+		write(nfil,*)'            </Attribute>'
 	endif
 	if ((iles.eq.1).or.(iles.eq.2)) then
 		write(nfil,*)'            <Attribute Name="nu_sgs" Center="Node">'
