@@ -669,7 +669,8 @@ endif
 !
 subroutine scalar_les_eddy_visc(ux1,uy1,uz1,phi1,phis1,phiss1,di1,ta1,tb1,tc1,td1,&
      uy2,uz2,phi2,di2,ta2,tb2,tc2,td2,uz3,phi3,di3,ta3,tb3,epsi,&
-     xnu_sgs1,xnu_sgs2,xnu_sgs3,tau_phi_x1,tau_phi_y2,tau_phi_z3)
+     xnu_sgs1,xnu_sgs2,xnu_sgs3,tau_phi_x1,tau_phi_y2,tau_phi_z3,&
+     phimax1,phimin1,phimax2,phimin2,phimax3,phimin3)
 !
 !************************************************************
 
@@ -682,11 +683,11 @@ implicit none
 
 real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: ux1,uy1,uz1,phi1,phis1,&
                                               phiss1,di1,ta1,tb1,tc1,td1,epsi,xnu_sgs1,&
-                                              tau_phi_x1
+                                              tau_phi_x1,phimax1,phimin1
 real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: uy2,uz2,phi2,di2,ta2,tb2,&
-											  tc2,td2,xnu_sgs2,tau_phi_y2
+											  tc2,td2,xnu_sgs2,tau_phi_y2,phimax2,phimin2
 real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: uz3,phi3,di3,ta3,tb3,&
-											  xnu_sgs3,tau_phi_z3
+											  xnu_sgs3,tau_phi_z3,phimax3,phimin3
 
 integer :: ijk,nvect1,nvect2,nvect3,i,j,k,nxyz
 real(mytype) :: x,y,z
@@ -695,6 +696,24 @@ nvect1=xsize(1)*xsize(2)*xsize(3)
 nvect2=ysize(1)*ysize(2)*ysize(3)
 nvect3=zsize(1)*zsize(2)*zsize(3)
 
+if (ilimitadvec.eq.1) then
+	call set_scalar_minmax(phi1,phi2,phi3,phimax1,phimax2,&
+	phimax3,phimin1,phimin2,phimin3)
+endif
+do i=1,xsize(1)
+	do j=1,xsize(2)
+		do k=1,xsize(3)
+!~ 			if (phimin1(i,j,k) > phi1(i,j,k)) then
+!~ 			print *,nrank,i,j,k,phimin1(i,j,k) , phi1(i,j,k),'error!'
+!~ 			stop
+!~ 			endif
+!~ 			if (phimax1(i,j,k) < phi1(i,j,k)) then
+!~ 			print *,nrank,i,j,k,phimax1(i,j,k) , phi1(i,j,k),'error!'
+!~ 			stop
+!~ 			endif
+		enddo
+	enddo
+enddo
 
 !X PENCILS
 do ijk=1,nvect1
@@ -714,13 +733,16 @@ call derxx (ta1,phi1,di1,sx,sfxp,ssxp,swxp,xsize(1),xsize(2),xsize(3),1)
 tau_phi_x1 = tau_phi_x1 + xnu/sc*ta1
 
 
-
-
-call transpose_x_to_y(phi1,phi2)
 call transpose_x_to_y(uy1,uy2)
 call transpose_x_to_y(uz1,uz2)
+if (ilimitadvec.ne.1) then
+	call transpose_x_to_y(phi1,phi2)
+endif
+
 
 !Y PENCILS
+
+
 do ijk=1,nvect2
    ta2(ijk,1,1)=uy2(ijk,1,1)*phi2(ijk,1,1)
 enddo
@@ -749,10 +771,14 @@ endif
 tau_phi_y2 = tau_phi_y2 + xnu/sc*ta2
 
 !call showval2(tau_phi_y2, 1,2,1)
-call transpose_y_to_z(phi2,phi3)
+if (ilimitadvec.ne.1) then
+	call transpose_y_to_z(phi2,phi3)
+endif
 call transpose_y_to_z(uz2,uz3)
 
+
 !Z PENCILS
+
 do ijk=1,nvect3
    ta3(ijk,1,1)=uz3(ijk,1,1)*phi3(ijk,1,1)
 enddo
@@ -772,6 +798,7 @@ tau_phi_z3 = tau_phi_z3 + xnu/sc*ta3
 call transpose_z_to_y(tau_phi_z3,tc2)
 call transpose_z_to_y(tb3,td2)
 
+
 !Y PENCILS ADD TERMS
 do ijk=1,nvect2
    tau_phi_y2(ijk,1,1)=tc2(ijk,1,1)+tau_phi_y2(ijk,1,1)
@@ -780,6 +807,7 @@ enddo
 
 call transpose_y_to_x(tau_phi_y2,tc1)
 call transpose_y_to_x(td2,td1)
+
 
 !X PENCILS ADD TERMS
 do ijk=1,nvect1
@@ -794,6 +822,11 @@ enddo
 
 !TIME ADVANCEMENT
 nxyz=xsize(1)*xsize(2)*xsize(3)  
+
+!~ if (nrank.eq.0) then
+!~ print *,nrank,phi1(5,5,5),phi1(3,5,5),phi1(6,5,5),phi1(5,4,5),phi1(5,6,5),&
+!~ phi1(5,5,4),phi1(5,5,6)
+!~ endif
 
 if ((nscheme.eq.1).or.(nscheme.eq.2)) then
    if ((nscheme.eq.1.and.itime.eq.1.and.ilit.eq.0).or.&
@@ -840,15 +873,19 @@ if (nscheme==4) then
       endif
    endif
 endif
-if (itype.gt.9) then
-!clip scalar to mix-max values
-do ijk=1,nxyz
-	phi1(ijk,1,1) = max(phi1(ijk,1,1), min(phi_bottom,phi_top))
-	phi1(ijk,1,1) = min(phi1(ijk,1,1), max(phi_bottom,phi_top))
-enddo
+!~ if (itype.gt.9) then
+!~ !clip scalar to mix-max values
+!~ do ijk=1,nxyz
+!~ 	phi1(ijk,1,1) = max(phi1(ijk,1,1), phimin1(ijk,1,1))
+!~ 	phi1(ijk,1,1) = min(phi1(ijk,1,1), phimax1(ijk,1,1))
+!~ 	print *,phimax1(ijk,1,1)-phi1(ijk,1,1),phimin1(ijk,1,1)-phi1(ijk,1,1)
+!~ enddo
+!~ 
+!~ endif
+
+if (ilimitadvec.eq.1) then
+	call clip_to_scalar_minmax(phi1,phimax1,phimin1)
 endif
-
-
 end subroutine scalar_les_eddy_visc
 
 
@@ -1061,12 +1098,138 @@ if (nscheme==4) then
 endif
 if (itype.gt.9) then
 !clip scalar to mix-max values
-do ijk=1,nxyz
-	phi1(ijk,1,1) = max(phi1(ijk,1,1), min(phi_bottom,phi_top))
-	phi1(ijk,1,1) = min(phi1(ijk,1,1), max(phi_bottom,phi_top))
-enddo
+!~ do ijk=1,nxyz
+!~ 	phi1(ijk,1,1) = max(phi1(ijk,1,1), min(phi_bottom,phi_top))
+!~ 	phi1(ijk,1,1) = min(phi1(ijk,1,1), max(phi_bottom,phi_top))
+!~ enddo
 endif
  end subroutine scalar_les_svm
+
+!************************************************************
+! 
+subroutine set_scalar_minmax(phi1,phi2,phi3,phimax1,phimax2,&
+	phimax3,phimin1,phimin2,phimin3)
+!
+!************************************************************
+USE param
+USE variables
+USE decomp_2d
+USE mymath
+
+implicit none
+
+real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: phi1,phimax1,phimin1
+real(mytype),dimension(ysize(1),ysize(2),ysize(3)) :: phi2,phimax2,phimin2
+real(mytype),dimension(zsize(1),zsize(2),zsize(3)) :: phi3,phimax3,phimin3
+
+integer :: ijk,nvect1,nvect2,nvect3,i,j,k,nxyz
+real(mytype) :: x,y,z
+
+!~ do i=1,xsize(1)
+!~ 	do j=1,xsize(2)
+!~ 		do k=1,xsize(3)
+!~ 			phimax1(i,j,k) = phi1(i,j,k)
+!~ 			phimin1(i,j,k) = phi1(i,j,k)
+!~ 		enddo
+!~ 	enddo
+!~ enddo
+ 
+!~ call showval1(phimin1,124,92,49)
+
+do i=2,xsize(1)-1
+	do j=1,xsize(2)
+		do k=1,xsize(3)	
+			phimax1(i,j,k) = max(phi1(i,j,k),max(phi1(i+1,j,k),phi1(i-1,j,k)))
+			phimin1(i,j,k) = min(phi1(i,j,k),min(phi1(i+1,j,k),phi1(i-1,j,k)))
+		enddo
+	enddo
+enddo
+
+!boundary points
+do j=1,xsize(2)
+	do k=1,xsize(3)
+		if (nclx.eq.0) then
+			phimax1(1,j,k) = max(phimax1(1,j,k),max(phi1(2,j,k),phi1(xsize(1),j,k)))
+			phimin1(1,j,k) = min(phimin1(1,j,k),min(phi1(2,j,k),phi1(xsize(1),j,k)))
+			phimax1(xsize(1),j,k) = max(phimax1(xsize(1),j,k),max(phi1(1,j,k),phi1(xsize(1)-1,j,k)))
+			phimin1(xsize(1),j,k) = min(phimax1(xsize(1),j,k),min(phi1(1,j,k),phi1(xsize(1)-1,j,k)))
+		endif
+	enddo
+enddo
+call transpose_x_to_y(phi1,phi2)
+call transpose_x_to_y(phimax1,phimax2)
+call transpose_x_to_y(phimin1,phimin2)
+
+do i=1,ysize(1)
+	do j=2,ysize(2)-1
+		do k=1,ysize(3)
+			phimax2(i,j,k) = max(phimax2(i,j,k),max(phi2(i,j-1,k),phi2(i,j+1,k)))
+			phimin2(i,j,k) = min(phimin2(i,j,k),min(phi2(i,j-1,k),phi2(i,j+1,k)))
+		enddo
+	enddo
+enddo
+
+call transpose_y_to_z(phi2,phi3)
+call transpose_y_to_z(phimax2,phimax3)
+call transpose_y_to_z(phimin2,phimin3)
+
+do i=1,zsize(1)
+	do j=1,zsize(2)
+		do k=2,zsize(3)-1
+			phimax3(i,j,k) = max(phimax3(i,j,k),max(phi3(i,j,k-1),phi3(i,j,k+1)))
+			phimin3(i,j,k) = min(phimin3(i,j,k),min(phi3(i,j,k-1),phi3(i,j,k+1)))
+		enddo
+	enddo
+enddo
+
+!boundary points
+do j=1,zsize(2)
+	do i=1,zsize(1)
+		if (nclz.eq.0) then
+			phimax3(i,j,1) = max(phimax3(i,j,1),max(phi3(i,j,2),phi3(i,j,zsize(3))))
+			phimin3(i,j,1) = min(phimin3(i,j,1),min(phi3(i,j,2),phi3(i,j,zsize(3))))
+			phimax3(i,j,zsize(3)) = max(phimax3(i,j,zsize(3)),max(phi3(i,j,1),phi3(i,j,zsize(3)-1)))
+			phimin3(i,j,zsize(3)) = min(phimin3(i,j,zsize(3)),min(phi3(i,j,1),phi3(i,j,zsize(3)-1)))
+		endif
+	enddo
+enddo
+
+call transpose_z_to_y(phimax3,phimax2)
+call transpose_z_to_y(phimin3,phimin2)
+call transpose_y_to_x(phimax2,phimax1)
+call transpose_y_to_x(phimin2,phimin1)
+
+end subroutine set_scalar_minmax
+
+
+!************************************************************
+! 
+subroutine clip_to_scalar_minmax(phi1,phimax1,phimin1)
+!***************************
+USE param
+USE variables
+USE decomp_2d
+
+implicit none
+
+real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: phi1,phimax1,phimin1
+integer :: ijk,nvect1,nvect2,nvect3,i,j,k,nxyz
+real(mytype) :: x,y,z
+
+do i=1,xsize(1)
+do j=1,xsize(2)
+do k=1,xsize(3)
+if (phimin1(i,j,k) > phimax1(i,j,k)) then
+!~ print *,i,j,k,phimin1(i,j,k) , phimax1(i,j,k)
+!~ stop
+endif
+phi1(i,j,k) = max(phi1(i,j,k), phimin1(i,j,k))
+phi1(i,j,k) = min(phi1(i,j,k), phimax1(i,j,k))
+enddo
+enddo
+enddo
+
+end subroutine clip_to_scalar_minmax
 
 
 

@@ -77,6 +77,10 @@ real(mytype), save, allocatable, dimension(:,:,:) :: div_tau_y1, div_tau_y2, div
 real(mytype), save, allocatable, dimension(:,:,:) :: div_tau_z1, div_tau_z2, div_tau_z3 !d(tau_zj)/dxj
 real(mytype), save, allocatable, dimension(:,:,:) :: les_a1,les_a2,les_a3,les_b1,les_b2 !les working variables
 real(mytype), save, allocatable, dimension(:,:,:) :: tau_phi_x1,tau_phi_y2,tau_phi_z3   ! nu*d(phi)/dx_i
+!arrays for conservative advection
+real(mytype), save, allocatable, dimension(:,:,:) :: phimin1,phimax1
+real(mytype), save, allocatable, dimension(:,:,:) :: phimin2,phimax2
+real(mytype), save, allocatable, dimension(:,:,:) :: phimin3,phimax3
 !variables for stretched vortex SGS model
 real(mytype), save, allocatable, dimension(:,:,:) :: k_sgs1,e_svm_x1,e_svm_y1,e_svm_z1  
 real(mytype), save, allocatable, dimension(:,:,:) :: k_sgs2,e_svm_x2,e_svm_y2,e_svm_z2
@@ -133,6 +137,7 @@ contains
     call alloc_x(td1);call alloc_x(te1);call alloc_x(tf1)
     call alloc_x(tg1);call alloc_x(th1);call alloc_x(ti1)
     call alloc_x(di1);call alloc_x(ep1)
+    call alloc_x(phimin1);call alloc_x(phimax1)
     if (iles > 0) then
 		! allocation for explicit LES 
 		call alloc_x(duxdx1);  call alloc_x(duydx1); call alloc_x(duzdx1); 
@@ -199,6 +204,7 @@ contains
     call alloc_y(tg2);call alloc_y(th2);call alloc_y(ti2)
     call alloc_y(tj2)
     call alloc_y(di2);call alloc_y(phi2)
+    call alloc_y(phimin2);call alloc_y(phimax2)
     if (iles > 0) then
 		! allocation for explicit LES 
 		call alloc_y(duxdx2);  call alloc_y(duydx2); call alloc_y(duzdx2);
@@ -223,6 +229,7 @@ contains
     call alloc_z(td3);call alloc_z(te3);call alloc_z(tf3)
     call alloc_z(tg3);call alloc_z(th3);call alloc_z(ti3)
     call alloc_z(di3);call alloc_z(phi3)
+    call alloc_z(phimin3);call alloc_z(phimax3)
     if (iles > 0) then
 		! allocation for explicit LES 
 		call alloc_z(duxdx3);  call alloc_z(duydx3); call alloc_z(duzdx3);

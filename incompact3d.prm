@@ -55,5 +55,7 @@
 0.0        # temperature at the top
 0.0        # buoyancy parameter
 1          # iwall (lower wall treatment for itype 10. 0:no wall treatment, 1:linear interpolation)
+1          # iimples (imlicit LES 0/1, if 1, SGS model should be 0)
+1		   # ilimitadvec - limits the scalar value at each point to allowed values (not higher or lower than surrounding points)
 #
 

@@ -46,7 +46,7 @@ USE var
 implicit none
 
 integer  :: i,j,k
-real(mytype) :: fpi2
+real(mytype) :: fpi2,denom,kc,km
 
 alfa1x= 2.
 af1x  =-(5./2.  )/dx
@@ -97,15 +97,28 @@ alsaix=(45.*fpi2*pi*pi-272.)/(2.*(45.*fpi2*pi*pi-208.))
 asix  =((6.-9.*alsaix)/4.)/dx2
 bsix  =((-3.+24*alsaix)/5.)/(4.*dx2)
 csix  =((2.-11.*alsaix)/20.)/(9.*dx2)
-!~ if (iimples.eq.1) then
-!~ 	k_c = 2.0*pi*pi
-!~ 	k_m = 6.2
-!~ 	denom = 64.0*k_m*dx2-54.0*kc*dx2+48.0
-!~ 	alpha = ( -27.0*kc*dx2+64.0*km*dx2       -96.0)/denom
-!~ 	a     = (  54.0*kc*dx2-15.0*kc*dx2*km*dx2+12.0)/denom
-!~ 	b     = (-216.0*kc*dx2+24.0*kc*dx2*km*dx2+192.0*km*dx2 -48.0)/denom
-!~ 	c     = (  54.0*kc*dx2- 9.0*kc*dx2*km*dx2-108.0)/denom
-!~ endif
+if (iimples.eq.1) then
+	kc = 4.0*pi*pi
+	km = 8.0
+!~ 	denom = 64.0*km*dx2-54.0*kc*dx2+48.0
+	denom = 64.0*km-54.0*kc+48.0
+!~ 	alsaix = ( -27.0*kc*dx2+64.0*km*dx2       -96.0)/denom
+!~ 	asix   = (  54.0*kc*dx2-15.0*kc*dx2*km*dx2+12.0)/denom
+!~ 	bsix   = (-216.0*kc*dx2+24.0*kc*dx2*km*dx2+192.0*km*dx2 -48.0)/denom
+!~ 	csix   = (  54.0*kc*dx2- 9.0*kc*dx2*km*dx2-108.0)/denom
+	alsaix = ( -27.0*kc+64.0*km       -96.0)/denom
+	asix   = (  54.0*kc-15.0*kc*km+12.0)/denom/dx2
+	bsix   = (-216.0*kc+24.0*kc*km+192.0*km -48.0)/denom/(4.*dx2)
+	csix   = (  54.0*kc- 9.0*kc*km-108.0)/denom/(9.*dx2)
+	if (nrank==0) then
+      write(*,*) '=== derxx ==='
+      write(*,*) alsaix
+      write(*,*) asix*dx2
+      write(*,*) bsix*4*dx2
+      write(*,*) csix*9*dx2
+      write(*,*) '============='
+	endif
+endif
 !      stop
 !if (nrank==0) then
 !      write(*,*) '=== derxx ==='
@@ -162,6 +175,18 @@ alsajy=(45.*fpi2*pi*pi-272.)/(2.*(45.*fpi2*pi*pi-208.))
 asjy  =((6.-9.*alsajy)/4.)/dy2
 bsjy  =((-3.+24*alsajy)/5.)/(4.*dy2)
 csjy  =((2.-11.*alsajy)/20.)/(9.*dy2)
+if (iimples.eq.1) then
+!~ 	denom = 64.0*km*dy2-54.0*kc*dy2+48.0
+!~ 	alsajy = ( -27.0*kc*dy2+64.0*km*dy2       -96.0)/denom
+!~ 	asjy   = (  54.0*kc*dy2-15.0*kc*dy2*km*dy2+12.0)/denom
+!~ 	bsjy   = (-216.0*kc*dy2+24.0*kc*dy2*km*dy2+192.0*km*dy2 -48.0)/denom
+!~ 	csjy   = (  54.0*kc*dy2- 9.0*kc*dy2*km*dy2-108.0)/denom
+	denom = 64.0*km-54.0*kc+48.0
+	alsajy = ( -27.0*kc+64.0*km       -96.0)/denom
+	asjy   = (  54.0*kc-15.0*kc*km+12.0)/denom/dy2
+	bsjy   = (-216.0*kc+24.0*kc*km+192.0*km -48.0)/denom/(4.*dy2)
+	csjy   = (  54.0*kc- 9.0*kc*km-108.0)/denom/(9.*dy2)
+endif
 !if (nrank==0) then
 !      write(*,*) '=== deryy ==='
 !      write(*,*) alsajy
@@ -510,6 +535,18 @@ enddo
          askz  =((6.-9.*alsakz)/4.)/dz2
          bskz  =((-3.+24*alsakz)/5.)/(4.*dz2)
          cskz  =((2.-11.*alsakz)/20.)/(9.*dz2)
+	if (iimples.eq.1) then
+!~ 		denom = 64.0*km*dz2-54.0*kc*dz2+48.0
+!~ 		alsakz = ( -27.0*kc*dz2+64.0*km*dz2       -96.0)/denom
+!~ 		askz   = (  54.0*kc*dz2-15.0*kc*dz2*km*dz2+12.0)/denom
+!~ 		bskz   = (-216.0*kc*dz2+24.0*kc*dz2*km*dz2+192.0*km*dz2 -48.0)/denom
+!~ 		cskz   = (  54.0*kc*dz2- 9.0*kc*dz2*km*dz2-108.0)/denom
+		denom = 64.0*km-54.0*kc+48.0
+		alsakz = ( -27.0*kc+64.0*km       -96.0)/denom
+		askz   = (  54.0*kc-15.0*kc*km+12.0)/denom/dz2
+		bskz   = (-216.0*kc+24.0*kc*km+192.0*km -48.0)/denom/(4.*dz2)
+		cskz   = (  54.0*kc- 9.0*kc*km-108.0)/denom/(9.*dz2)
+	endif
 !if (nrank==0) then
 !         write(*,*) '=== derzz ==='
 !         write(*,*) alsakz

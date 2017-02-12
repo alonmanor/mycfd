@@ -49,8 +49,8 @@ module variables
 !4-->every 4 mesh nodes
 !nvisu = size for visualization collection
 !~ integer,parameter :: nx=128,ny=129,nz=84
-!~ integer,parameter :: nx=64,ny=65,nz=64
-integer,parameter :: nx=256,ny=129,nz=128 !ping he - small machine
+!~ integer,parameter :: nx=128,ny=65,nz=64
+integer,parameter :: nx=192,ny=97,nz=96 !ping he - small machine
 integer,parameter :: nstat=1,nvisu=1
 integer,parameter :: p_row=4,p_col=2
 integer,parameter :: nxm=nx,nym=ny-1,nzm=nz 
@@ -146,8 +146,8 @@ use decomp_2d, only : mytype
 
   integer :: nclx,ncly,nclz
   integer :: ifft, ivirt,istret,iforc_entree,iturb
-  integer :: itype, iskew, iin, nscheme, ifirst, ilast, iles, iwall
-  integer :: isave,ilit,idebmod, imodulo, idemarre, icommence, irecord
+  integer :: itype, iskew, iin, nscheme, ifirst, ilast, iles, iwall,iimples
+  integer :: isave,ilit,idebmod, imodulo, idemarre, icommence, irecord,ilimitadvec
   integer :: iscalar
   integer :: nxboite, istat,iread,iadvance_time 
   real(mytype) :: xlx,yly,zlz,dx,dy,dz,dx2,dy2,dz2

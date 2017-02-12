@@ -155,7 +155,8 @@ do itime=ifirst,ilast
 			if ((iles.eq.1).or.(iles.eq.2)) then !eddy viscousity scalar dynamics
 			call scalar_les_eddy_visc(ux1,uy1,uz1,phi1,phis1,phiss1,di1,tg1,th1,ti1,td1,&
 				  uy2,uz2,phi2,di2,ta2,tb2,tc2,td2,uz3,phi3,di3,ta3,tb3,ep1,&
-				  xnu_sgs1,xnu_sgs2,xnu_sgs3,tau_phi_x1,tau_phi_y2,tau_phi_z3) 
+				  xnu_sgs1,xnu_sgs2,xnu_sgs3,tau_phi_x1,tau_phi_y2,tau_phi_z3,&
+	              phimax1,phimin1,phimax2,phimin2,phimax3,phimin3) 
 			endif
 			if ((iles.eq.4).or.(iles.eq.5)) then !SVM scalar dynamics
 			call scalar_les_svm(ux1,uy1,uz1,phi1,phis1,phiss1,di1,tg1,th1,ti1,td1,&

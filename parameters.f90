@@ -115,6 +115,8 @@ read (10,*) phi_bottom
 read (10,*) phi_top
 read (10,*) buoy_param
 read (10,*) iwall
+read (10,*) iimples
+read (10,*) ilimitadvec
 close(10) 
 if (nrank==0) then
 print *,'==========================================================='
@@ -166,7 +168,11 @@ if (itype.eq.10) then
    write(*,1116) u_geos,dpdx_drive
 endif
 if (iles<1) then
-	print *,'No explicit LES'
+	if (iimples.eq.1) then
+		print *,'implicit LES'
+	else
+		print *,'No explicit LES'
+	endif
 else
 	print *,'Explicit LES applied'
 	if (iles.eq.1) then
