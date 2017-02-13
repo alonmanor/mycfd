@@ -86,18 +86,22 @@ alsatx= 2./11.
 astx  = (12./11.)/dx2
 bstx  = (3./44. )/dx2
 
-!alsaix= 2./11.
-!asix  = (12./11.)/dx2
-!bsix  = (3./44. )/dx2
-!csix  = 0.
+if (iimples.eq.0) then
+	alsaix= 2./11.
+	asix  = (12./11.)/dx2
+	bsix  = (3./44. )/dx2
+	csix  = 0.
+endif
 !NUMERICAL DISSIPATION (see publications for help)
-fpi2=4.
-!      fpi2=(48./7)/(pi*pi)
-alsaix=(45.*fpi2*pi*pi-272.)/(2.*(45.*fpi2*pi*pi-208.))
-asix  =((6.-9.*alsaix)/4.)/dx2
-bsix  =((-3.+24*alsaix)/5.)/(4.*dx2)
-csix  =((2.-11.*alsaix)/20.)/(9.*dx2)
 if (iimples.eq.1) then
+	fpi2=4.
+	!      fpi2=(48./7)/(pi*pi)
+	alsaix=(45.*fpi2*pi*pi-272.)/(2.*(45.*fpi2*pi*pi-208.))
+	asix  =((6.-9.*alsaix)/4.)/dx2
+	bsix  =((-3.+24*alsaix)/5.)/(4.*dx2)
+	csix  =((2.-11.*alsaix)/20.)/(9.*dx2)
+endif
+if (iimples.eq.2) then
 	kc = 4.0*pi*pi
 	km = 8.0
 !~ 	denom = 64.0*km*dx2-54.0*kc*dx2+48.0
@@ -166,16 +170,19 @@ alsaty= 2./11.
 asty  = (12./11.)/dy2
 bsty  = (3./44. )/dy2
 
-!alsajy= 2./11.
-!asjy  = (12./11.)/dy2
-!bsjy  = (3./44. )/dy2
-!csjy   = 0.
-
-alsajy=(45.*fpi2*pi*pi-272.)/(2.*(45.*fpi2*pi*pi-208.))
-asjy  =((6.-9.*alsajy)/4.)/dy2
-bsjy  =((-3.+24*alsajy)/5.)/(4.*dy2)
-csjy  =((2.-11.*alsajy)/20.)/(9.*dy2)
+if (iimples.eq.0) then
+	alsajy= 2./11.
+	asjy  = (12./11.)/dy2
+	bsjy  = (3./44. )/dy2
+	csjy   = 0.
+endif
 if (iimples.eq.1) then
+	alsajy=(45.*fpi2*pi*pi-272.)/(2.*(45.*fpi2*pi*pi-208.))
+	asjy  =((6.-9.*alsajy)/4.)/dy2
+	bsjy  =((-3.+24*alsajy)/5.)/(4.*dy2)
+	csjy  =((2.-11.*alsajy)/20.)/(9.*dy2)
+endif
+if (iimples.eq.2) then
 !~ 	denom = 64.0*km*dy2-54.0*kc*dy2+48.0
 !~ 	alsajy = ( -27.0*kc*dy2+64.0*km*dy2       -96.0)/denom
 !~ 	asjy   = (  54.0*kc*dy2-15.0*kc*dy2*km*dy2+12.0)/denom
@@ -526,16 +533,19 @@ enddo
    alsatz= 2./11.
    astz  = (12./11.)/dz2
    bstz  = (3./44. )/dz2
-
-!   alsakz= 2./11.
-!   askz  = (12./11.)/dz2
-!   bskz  = (3./44. )/dz2
-!   cskz  = 0.
+if (iimples.eq.0) then
+   alsakz= 2./11.
+   askz  = (12./11.)/dz2
+   bskz  = (3./44. )/dz2
+   cskz  = 0.
+endif
+if (iimples.eq.1) then
          alsakz=(45.*fpi2*pi*pi-272.)/(2.*(45.*fpi2*pi*pi-208.))
          askz  =((6.-9.*alsakz)/4.)/dz2
          bskz  =((-3.+24*alsakz)/5.)/(4.*dz2)
          cskz  =((2.-11.*alsakz)/20.)/(9.*dz2)
-	if (iimples.eq.1) then
+endif
+	if (iimples.eq.2) then
 !~ 		denom = 64.0*km*dz2-54.0*kc*dz2+48.0
 !~ 		alsakz = ( -27.0*kc*dz2+64.0*km*dz2       -96.0)/denom
 !~ 		askz   = (  54.0*kc*dz2-15.0*kc*dz2*km*dz2+12.0)/denom

@@ -145,7 +145,7 @@ module param
 use decomp_2d, only : mytype
 
   integer :: nclx,ncly,nclz
-  integer :: ifft, ivirt,istret,iforc_entree,iturb
+  integer :: ifft, ivirt,istret,iforc_entree,iturb,idelta
   integer :: itype, iskew, iin, nscheme, ifirst, ilast, iles, iwall,iimples
   integer :: isave,ilit,idebmod, imodulo, idemarre, icommence, irecord,ilimitadvec
   integer :: iscalar

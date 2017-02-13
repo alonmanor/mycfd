@@ -663,11 +663,19 @@ integer (kind=MPI_OFFSET_KIND) :: disp
 if (iles > 0) then !initialize the deltabar array
 	do j=1,ny
 		if (istret > 0) then
-			delta_bar(j) = (dx*dz*dy/ppy(j))**(1.0/3.0)
-!~ 			delta_bar(j) = (dx**2.0+dz**2.0+(dy/ppy(j))**2.0)**0.5
+			if (idelta.eq.0) then
+				delta_bar(j) = (dx*dz*dy/ppy(j))**(1.0/3.0)
+			endif
+			if (idelta.eq.1) then
+				delta_bar(j) = (dx**2.0+dz**2.0+(dy/ppy(j))**2.0)**0.5
+			endif
 	   else
-			delta_bar(j) = (dx*dz*dy)**(1.0/3.0)
-!~ 			delta_bar(j) = (dx**2.0+dz**2.0+dy**2.0)**0.5
+			if (idelta.eq.0) then
+				delta_bar(j) = (dx*dz*dy)**(1.0/3.0)
+			endif
+			if (idelta.eq.1) then
+				delta_bar(j) = (dx**2.0+dz**2.0+dy**2.0)**0.5
+			endif
 	   endif
 	   if (nrank.eq.0) print *,'delta_bar',j,delta_bar(j)
 	enddo	

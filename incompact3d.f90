@@ -125,7 +125,7 @@ do itime=ifirst,ilast
    t=(itime-1)*dt
    if (nrank==0) then
       write(*,1001) itime,t
-1001  format('Time step =',i7,', Time unit =',F9.3)
+1001  format('Time step =',i7,', Time unit =',F9.5)
    endif
    
    do itr=1,iadvance_time

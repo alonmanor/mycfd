@@ -700,20 +700,6 @@ if (ilimitadvec.eq.1) then
 	call set_scalar_minmax(phi1,phi2,phi3,phimax1,phimax2,&
 	phimax3,phimin1,phimin2,phimin3)
 endif
-do i=1,xsize(1)
-	do j=1,xsize(2)
-		do k=1,xsize(3)
-!~ 			if (phimin1(i,j,k) > phi1(i,j,k)) then
-!~ 			print *,nrank,i,j,k,phimin1(i,j,k) , phi1(i,j,k),'error!'
-!~ 			stop
-!~ 			endif
-!~ 			if (phimax1(i,j,k) < phi1(i,j,k)) then
-!~ 			print *,nrank,i,j,k,phimax1(i,j,k) , phi1(i,j,k),'error!'
-!~ 			stop
-!~ 			endif
-		enddo
-	enddo
-enddo
 
 !X PENCILS
 do ijk=1,nvect1
@@ -735,7 +721,7 @@ tau_phi_x1 = tau_phi_x1 + xnu/sc*ta1
 
 call transpose_x_to_y(uy1,uy2)
 call transpose_x_to_y(uz1,uz2)
-if (ilimitadvec.ne.1) then
+if (ilimitadvec.ne.1) then !if ilimitadvec.eq.1, this transposition is done in set_scalar_minmax()
 	call transpose_x_to_y(phi1,phi2)
 endif
 
@@ -771,7 +757,7 @@ endif
 tau_phi_y2 = tau_phi_y2 + xnu/sc*ta2
 
 !call showval2(tau_phi_y2, 1,2,1)
-if (ilimitadvec.ne.1) then
+if (ilimitadvec.ne.1) then !if ilimitadvec.eq.1, this transposition is done in set_scalar_minmax()
 	call transpose_y_to_z(phi2,phi3)
 endif
 call transpose_y_to_z(uz2,uz3)
@@ -873,15 +859,6 @@ if (nscheme==4) then
       endif
    endif
 endif
-!~ if (itype.gt.9) then
-!~ !clip scalar to mix-max values
-!~ do ijk=1,nxyz
-!~ 	phi1(ijk,1,1) = max(phi1(ijk,1,1), phimin1(ijk,1,1))
-!~ 	phi1(ijk,1,1) = min(phi1(ijk,1,1), phimax1(ijk,1,1))
-!~ 	print *,phimax1(ijk,1,1)-phi1(ijk,1,1),phimin1(ijk,1,1)-phi1(ijk,1,1)
-!~ enddo
-!~ 
-!~ endif
 
 if (ilimitadvec.eq.1) then
 	call clip_to_scalar_minmax(phi1,phimax1,phimin1)
@@ -1213,21 +1190,32 @@ USE decomp_2d
 implicit none
 
 real(mytype),dimension(xsize(1),xsize(2),xsize(3)) :: phi1,phimax1,phimin1
-integer :: ijk,nvect1,nvect2,nvect3,i,j,k,nxyz
-real(mytype) :: x,y,z
+integer :: ijk,nvect1,nvect2,nvect3,i,j,k,nxyz,minclipcount,maxclipcount
+real(mytype) :: x,y,z,tempphi,vpermin,vpermax
 
+minclipcount = 0
+maxclipcount = 0
+vpermin = 0.0
+vpermax = 0.0
 do i=1,xsize(1)
 do j=1,xsize(2)
 do k=1,xsize(3)
-if (phimin1(i,j,k) > phimax1(i,j,k)) then
-!~ print *,i,j,k,phimin1(i,j,k) , phimax1(i,j,k)
-!~ stop
-endif
+tempphi = phi1(i,j,k)
 phi1(i,j,k) = max(phi1(i,j,k), phimin1(i,j,k))
 phi1(i,j,k) = min(phi1(i,j,k), phimax1(i,j,k))
+if (tempphi>phi1(i,j,k)) then
+maxclipcount = maxclipcount + 1
+vpermax = vpermax + (tempphi-phi1(i,j,k))/phi1(i,j,k)
+endif
+if (tempphi<phi1(i,j,k)) then
+minclipcount = minclipcount + 1
+vpermin = vpermin + (phi1(i,j,k)-tempphi)/phi1(i,j,k)
+endif
 enddo
 enddo
 enddo
+!~ print *,'max clip- thread',nrank,100*float(maxclipcount)/float(xsize(1)*xsize(2)*xsize(3)),'clipped',vpermax/float(maxclipcount)
+!~ print *,'min clip- thread',nrank,100*float(minclipcount)/float(xsize(1)*xsize(2)*xsize(3)),'clipped',vpermin/float(minclipcount)
 
 end subroutine clip_to_scalar_minmax
 

@@ -117,6 +117,7 @@ read (10,*) buoy_param
 read (10,*) iwall
 read (10,*) iimples
 read (10,*) ilimitadvec
+read (10,*) idelta
 close(10) 
 if (nrank==0) then
 print *,'==========================================================='
