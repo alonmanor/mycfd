@@ -271,10 +271,6 @@ if ((iles.eq.4).or.(iles.eq.5)) then
 	call transpose_y_to_z(k_sgs2,k_sgs3)
 	call k_sgs_circular(ux3,uy3,uz3,k_sgs3,zsize(1),&
 				zsize(2),zsize(3),e_svm_y3,3)
-!~ 	do ijk=1,nvect3
-!~       k_sgs3(ijk,1,1) = 0.1*(ux3(ijk,1,1)**2.0+uy3(ijk,1,1)**2.0+&
-!~ 						uz3(ijk,1,1)**2.0)
-!~ 	enddo
 	!full SGS TKE in k_sgs3
 endif
 
@@ -664,7 +660,7 @@ endif
 
  end subroutine scalar
  
- 
+!~  
 !************************************************************
 !
 subroutine scalar_les_eddy_visc(ux1,uy1,uz1,phi1,phis1,phiss1,di1,ta1,tb1,tc1,td1,&
@@ -678,6 +674,9 @@ USE param
 USE variables
 USE decomp_2d
 use mymath
+use parfiX
+use parfiY
+use parfiZ
 
 implicit none
 
@@ -707,7 +706,6 @@ do ijk=1,nvect1
 enddo
 call derx (tb1,ta1,di1,sx,ffx,fsx,fwx,xsize(1),xsize(2),xsize(3),0) !d(u*phi)/dx -> tb1
 call derx (ta1,phi1,di1,sx,ffxp,fsxp,fwxp,xsize(1),xsize(2),xsize(3),1) !dphi/dx -> ta1
-!~ call showval1(xnu_sgs1, 5, 5, 5)
 do ijk=1,nvect1
 	!(nu_mol+nu_sgs)*(dphi/dx) -> ta1
 	ta1(ijk,1,1)=(xnu_sgs1(ijk,1,1)/prtdl)*ta1(ijk,1,1)  
@@ -734,7 +732,6 @@ do ijk=1,nvect2
 enddo
 call dery (tb2,ta2,di2,sy,ffy,fsy,fwy,ppy,ysize(1),ysize(2),ysize(3),0)!d(v*phi)/dy -> tb2
 call dery (ta2,phi2,di2,sy,ffyp,fsyp,fwyp,ppy,ysize(1),ysize(2),ysize(3),1)!dphi/dy -> ta2
-!~ call showval2(xnu_sgs2, 5, 5, 5)
 do ijk=1,nvect2
 	!(nu_mol+nu_sgs)*(dphi/dy) -> ta2
 	ta2(ijk,1,1)=(xnu_sgs2(ijk,1,1)/prtdl)*ta2(ijk,1,1) 
@@ -770,7 +767,8 @@ do ijk=1,nvect3
 enddo
 call derz (tb3,ta3,di3,sz,ffz,fsz,fwz,zsize(1),zsize(2),zsize(3),0)!d(w*phi)/dz -> tb3
 call derz (ta3,phi3,di3,sz,ffzp,fszp,fwzp,zsize(1),zsize(2),zsize(3),0)!dphi/dz -> ta2
-!~ call showval3(xnu_sgs3, 5, 5, 5)
+
+
 do ijk=1,nvect3
 	!(nu_mol+nu_sgs)*(dphi/dz) -> ta3
 	ta3(ijk,1,1)=(xnu_sgs3(ijk,1,1)/prtdl)*ta3(ijk,1,1) 
@@ -809,10 +807,7 @@ enddo
 !TIME ADVANCEMENT
 nxyz=xsize(1)*xsize(2)*xsize(3)  
 
-!~ if (nrank.eq.0) then
-!~ print *,nrank,phi1(5,5,5),phi1(3,5,5),phi1(6,5,5),phi1(5,4,5),phi1(5,6,5),&
-!~ phi1(5,5,4),phi1(5,5,6)
-!~ endif
+!~ 
 
 if ((nscheme.eq.1).or.(nscheme.eq.2)) then
    if ((nscheme.eq.1.and.itime.eq.1.and.ilit.eq.0).or.&
@@ -860,6 +855,8 @@ if (nscheme==4) then
    endif
 endif
 
+
+
 if (ilimitadvec.eq.1) then
 	call clip_to_scalar_minmax(phi1,phimax1,phimin1)
 endif
@@ -868,6 +865,12 @@ end subroutine scalar_les_eddy_visc
 
 
 !************************************************************
+
+
+
+
+!************************************************************
+
 !
 subroutine scalar_les_svm(ux1,uy1,uz1,phi1,phis1,phiss1,di1,ta1,tb1,tc1,td1,&
      uy2,uz2,phi2,di2,ta2,tb2,tc2,td2,uz3,phi3,di3,ta3,tb3,epsi,&

@@ -42,6 +42,9 @@ USE MPI
 USE IBM
 USE derivX
 USE derivZ
+use parfiX
+use parfiY
+use parfiZ
 
 implicit none
 
@@ -62,6 +65,7 @@ call parameter()
 call init_variables
 
 call schemes()
+call filter()
 
 if (nclx==0) then
    bcx=0
@@ -128,12 +132,24 @@ do itime=ifirst,ilast
 1001  format('Time step =',i7,', Time unit =',F9.5)
    endif
    
+   call filx(phi1,phi1,ta1,sx,vx,fiffx,fifx,ficx,fibx,fibbx,filax,fiz1x,&
+     fiz2x,xsize(1),xsize(2),xsize(3),0)
+	call transpose_x_to_y(phi1,phi2)
+	call transpose_y_to_z(phi2,phi3)
+    call filz(phi3,phi3,ta3,sz,vz,fiffz,fifz,ficz,fibz,fibbz,filaz,fiz1z,&
+     fiz2z,zsize(1),zsize(2),zsize(3),0)
+    call transpose_z_to_y(phi3,phi2) 
+	call transpose_y_to_x(phi2,phi1)
+	
    do itr=1,iadvance_time
 
       if (nclx.eq.2) then
          call inflow (ux1,uy1,uz1,phi1) !X PENCILS
          call outflow(ux1,uy1,uz1,phi1) !X PENCILS 
       endif
+      
+      
+      
       !X-->Y-->Z-->Y-->X
       call convdiff(ux1,uy1,uz1,ta1,tb1,tc1,td1,te1,tf1,tg1,th1,ti1,di1,&
            ux2,uy2,uz2,ta2,tb2,tc2,td2,te2,tf2,tg2,th2,ti2,tj2,di2,&

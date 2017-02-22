@@ -1069,6 +1069,9 @@ if (xstart(2) == 1) then
 			endif
 			phis(i,1,k) = 0.0
 			phiss(i,1,k) = 0.0
+			phi(i,2,k) = -0.97
+			phis(i,2,k) = 0.0
+			phiss(i,2,k) = 0.0
 		enddo
 	enddo
 endif
@@ -1080,6 +1083,9 @@ if (xend(2) == ny) then
 			phi(i,xsize(2),k) = phi_top
 			phis(i,xsize(2),k) = 0.0
 			phiss(i,xsize(2),k) = 0.0
+			phi(i,xsize(2)-1,k) = -0.15
+			phis(i,xsize(2)-1,k) = 0.0
+			phiss(i,xsize(2)-1,k) = 0.0
 		enddo
 	enddo
 endif
